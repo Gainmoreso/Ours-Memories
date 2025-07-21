@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>我们的美好回忆</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            color: white;
+            line-height: 1.6;
+            overflow-x: hidden;
+            height: 100vh;
+            touch-action: manipulation;
+        }
+        
+        /* 开场动画 */
+        .intro-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(to bottom, #1a2980, #26d0ce);
+            z-index: 1000;
+            transition: opacity 1.2s ease-out, transform 1.2s ease-out;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .intro-title {
+            font-size: 2.8rem;
+            margin-bottom: 15px;
+            font-weight: 700;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            font-family: 'Ma Shan Zheng', cursive;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 0.8s forwards 0.3s;
+        }
+        
+        .intro-subtitle {
+            font-size: 1.3rem;
+            margin-bottom: 40px;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 0.8s forwards 0.5s;
+            max-width: 90%;
+            line-height: 1.8;
+        }
+        
+        .start-button {
+            background: linear-gradient(45deg, #ff6b6b, #ff8e53);
+            border: none;
+            padding: 16px 50px;
+            font-size: 1.3rem;
+            color: white;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(255, 107, 107, 0.4);
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 0.8s forwards 0.7s;
+            font-weight: 500;
+        }
+        
+        .start-button:active {
+            transform: scale(0.95);
+            box-shadow: 0 2px 10px rgba(255, 107, 107, 0.3);
+        }
+        
+        /* 主内容区 */
+        .main-content {
+            display: none;
+            padding-top: 30px;
+            padding-bottom: 80px;
+        }
+        
+        .header {
+            text-align: center;
+            padding: 0 20px;
+            margin-bottom: 30px;
+        }
+        
+        .main-title {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            font-family: 'Ma Shan Zheng', cursive;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        
+        /* 照片墙 */
+        .photo-wall {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            padding: 0 15px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .photo-item {
+            aspect-ratio: 3/4;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transform: scale(0.95);
+            opacity: 0;
+            transition: transform 0.4s ease, opacity 0.4s ease;
+        }
+        
+        .photo-item.visible {
+            transform: scale(1);
+            opacity: 1;
+        }
+        
+        .photo-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .photo-item:hover img {
+            transform: scale(1.05);
+        }
+        
+        .photo-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            padding: 15px 10px 10px;
+            font-size: 0.9rem;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+        }
+        
+        .photo-item:hover .photo-caption {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* 照片查看器 */
+        .photo-viewer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+        
+        .photo-viewer.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+        
+        .viewer-image {
+            max-width: 95%;
+            max-height: 70vh;
+            object-fit: contain;
+            border-radius: 8px;
+            box-shadow: 0 5px 30px rgba(0, 0, 0, 0.5);
+            transform: scale(0.9);
+            transition: transform 0.4s ease;
+        }
+        
+        .photo-viewer.active .viewer-image {
+            transform: scale(1);
+        }
+        
+        .viewer-caption {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            text-align: center;
+            max-width: 90%;
+            padding: 0 20px;
+        }
+        
+        .close-viewer {
+            position: absolute;
+            top: 25px;
+            right: 25px;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        
+        .close-viewer:active {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        /* 控制栏 */
+        .controls {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 100;
+        }
+        
+        .control-btn {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1.6rem;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .control-btn:active {
+            background: rgba(255, 255, 255, 0.1);
+            transform: scale(0.9);
+        }
+        
+        .music-control {
+            position: relative;
+        }
+        
+        .music-wave {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            opacity: 0;
+            background: rgba(255, 255, 255, 0.1);
+            animation: pulse 1.5s infinite;
+        }
+        
+        .music-playing .music-wave {
+            opacity: 1;
+        }
+        
+        /* 动画 */
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(0.8);
+                opacity: 0.7;
+            }
+            100% {
+                transform: scale(1.4);
+                opacity: 0;
+            }
+        }
+        
+        /* 响应式调整 */
+        @media (min-width: 500px) {
+            .photo-wall {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 20px;
+            }
+            
+            .intro-title {
+                font-size: 3.5rem;
+            }
+            
+            .intro-subtitle {
+                font-size: 1.4rem;
+            }
+            
+            .main-title {
+                font-size: 2.5rem;
+            }
+        }
+        
+        @media (min-width: 768px) {
+            .photo-wall {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+        
+        /* 装饰元素 */
+        .floating-heart {
+            position: absolute;
+            font-size: 1.8rem;
+            opacity: 0.7;
+            z-index: -1;
+            animation: float 8s infinite ease-in-out;
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+            25% {
+                transform: translate(20px, -20px) rotate(10deg);
+            }
+            50% {
+                transform: translate(0, -40px) rotate(0deg);
+            }
+            75% {
+                transform: translate(-20px, -20px) rotate(-10deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 开场动画 -->
+    <div class="intro-screen" id="introScreen">
+        <h1 class="intro-title">我们的回忆</h1>
+        <p class="intro-subtitle">那些与朋友共度的美好时光，永远珍藏在心底</p>
+        <button class="start-button" id="startButton">
+            <i class="fas fa-play-circle"></i> 开启回忆
+        </button>
+        
+        <!-- 浮动装饰 -->
+        <div class="floating-heart" style="top: 20%; left: 15%;">❤️</div>
+        <div class="floating-heart" style="top: 10%; right: 20%; animation-delay: -2s;">✨</div>
+        <div class="floating-heart" style="bottom: 30%; left: 25%; animation-delay: -4s;">🌸</div>
+        <div class="floating-heart" style="bottom: 20%; right: 15%; animation-delay: -6s;">🎈</div>
+    </div>
+    
+    <!-- 主内容区 -->
+    <div class="main-content" id="mainContent">
+        <div class="header">
+            <h1 class="main-title">美好时光相册</h1>
+            <p class="subtitle">每一次相聚都是珍贵的回忆</p>
+        </div>
+        
+        <div class="photo-wall">
+            <div class="photo-item">
+                <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=600&w=400" alt="朋友聚会">
+                <div class="photo-caption">周末的欢乐聚会，笑声不断</div>
+            </div>
+            <div class="photo-item">
+                <img src="https://images.unsplash.com/photo-1543269865-cbf427effbad?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=600&w=400" alt="旅行合影">
+                <div class="photo-caption">难忘的毕业旅行，青春不散场</div>
+            </div>
+            <div class="photo-item">
+                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=600&w=400" alt="生日派对">
+                <div class="photo-caption">特别的生日，有你们才完整</div>
+            </div>
+            <div class="photo-item">
+                <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=600&w=400" alt="户外烧烤">
+                <div class="photo-caption">夏夜烧烤，星空下的畅谈</div>
+            </div>
+            <div class="photo-item">
+                <img src="https://images.unsplash.com/photo-1532635241-17e820acc59f?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=600&w=400" alt="海边度假">
+                <div class="photo-caption">海边的日出，新一天的开始</div>
+            </div>
+            <div class="photo-item">
+                <img src="https://images.unsplash.com/photo-1502685104226-ee32379fefbe?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=600&w=400" alt="节日庆祝">
+                <div class="photo-caption">圣诞夜的温暖，友谊的礼物</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 照片查看器 -->
+    <div class="photo-viewer" id="photoViewer">
+        <div class="close-viewer" id="closeViewer">
+            <i class="fas fa-times"></i>
+        </div>
+        <img class="viewer-image" id="viewerImage" src="" alt="查看照片">
+        <div class="viewer-caption" id="viewerCaption"></div>
+    </div>
+    
+    <!-- 控制栏 -->
+    <div class="controls">
+        <button class="control-btn" id="prevBtn">
+            <i class="fas fa-step-backward"></i>
+        </button>
+        <button class="control-btn music-control" id="musicBtn">
+            <i class="fas fa-music"></i>
+            <div class="music-wave"></div>
+        </button>
+        <button class="control-btn" id="nextBtn">
+            <i class="fas fa-step-forward"></i>
+        </button>
+    </div>
+    
+    <!-- 背景音乐 -->
+    <audio id="bgMusic" loop>
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+    </audio>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 元素引用
+            const introScreen = document.getElementById('introScreen');
+            const startButton = document.getElementById('startButton');
+            const mainContent = document.getElementById('mainContent');
+            const photoItems = document.querySelectorAll('.photo-item');
+            const photoViewer = document.getElementById('photoViewer');
+            const viewerImage = document.getElementById('viewerImage');
+            const viewerCaption = document.getElementById('viewerCaption');
+            const closeViewer = document.getElementById('closeViewer');
+            const musicBtn = document.getElementById('musicBtn');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const bgMusic = document.getElementById('bgMusic');
+            
+            // 照片数据
+            const photos = [
+                {img: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=600&w=400", caption: "周末的欢乐聚会，笑声不断"},
+                {img: "https://images.unsplash.com/photo-1543269865-cbf427effbad?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=600&w=400", caption: "难忘的毕业旅行，青春不散场"},
+                {img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=600&w=400", caption: "特别的生日，有你们才完整"},
+                {img: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=600&w=400", caption: "夏夜烧烤，星空下的畅谈"},
+                {img: "https://images.unsplash.com/photo-1532635241-17e820acc59f?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=600&w=400", caption: "海边的日出，新一天的开始"},
+                {img: "https://images.unsplash.com/photo-1502685104226-ee32379fefbe?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=600&w=400", caption: "圣诞夜的温暖，友谊的礼物"}
+            ];
+            
+            let currentPhotoIndex = 0;
+            
+            // 开始按钮事件
+            startButton.addEventListener('click', function() {
+                // 开场动画淡出
+                introScreen.style.opacity = '0';
+                introScreen.style.transform = 'scale(1.1)';
+                
+                setTimeout(() => {
+                    introScreen.style.display = 'none';
+                    mainContent.style.display = 'block';
+                    
+                    // 显示照片项（带延迟动画）
+                    photoItems.forEach((item, index) => {
+                        setTimeout(() => {
+                            item.classList.add('visible');
+                        }, index * 150);
+                    });
+                    
+                    // 尝试播放音乐
+                    playBackgroundMusic();
+                }, 1000);
+            });
+            
+            // 播放背景音乐
+            function playBackgroundMusic() {
+                bgMusic.volume = 0.5;
+                const playPromise = bgMusic.play();
+                
+                if (playPromise !== undefined) {
+                    playPromise.then(() => {
+                        musicBtn.classList.add('music-playing');
+                    }).catch(error => {
+                        // 自动播放被阻止，显示提示
+                        showMusicPrompt();
+                    });
+                }
+            }
+            
+            // 显示音乐播放提示
+            function showMusicPrompt() {
+                const prompt = document.createElement('div');
+                prompt.innerHTML = '点击<i class="fas fa-music"></i>按钮播放音乐';
+                prompt.style.cssText = `
+                    position: fixed;
+                    bottom: 80px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    background: rgba(0,0,0,0.8);
+                    color: white;
+                    padding: 10px 20px;
+                    border-radius: 30px;
+                    font-size: 0.9rem;
+                    z-index: 100;
+                    animation: fadeInOut 5s forwards;
+                `;
+                
+                document.body.appendChild(prompt);
+                
+                setTimeout(() => {
+                    prompt.style.opacity = '0';
+                    setTimeout(() => prompt.remove(), 1000);
+                }, 4000);
+            }
+            
+            // 音乐控制
+            musicBtn.addEventListener('click', function() {
+                if (bgMusic.paused) {
+                    bgMusic.play();
+                    musicBtn.classList.add('music-playing');
+                } else {
+                    bgMusic.pause();
+                    musicBtn.classList.remove('music-playing');
+                }
+            });
+            
+            // 照片点击事件
+            photoItems.forEach((item, index) => {
+                item.addEventListener('click', function() {
+                    currentPhotoIndex = index;
+                    openPhotoViewer();
+                });
+            });
+            
+            // 打开照片查看器
+            function openPhotoViewer() {
+                viewerImage.src = photos[currentPhotoIndex].img;
+                viewerCaption.textContent = photos[currentPhotoIndex].caption;
+                photoViewer.classList.add('active');
+            }
+            
+            // 关闭照片查看器
+            closeViewer.addEventListener('click', function() {
+                photoViewer.classList.remove('active');
+            });
+            
+            // 上一张/下一张
+            prevBtn.addEventListener('click', function() {
+                currentPhotoIndex = (currentPhotoIndex - 1 + photos.length) % photos.length;
+                openPhotoViewer();
+            });
+            
+            nextBtn.addEventListener('click', function() {
+                currentPhotoIndex = (currentPhotoIndex + 1) % photos.length;
+                openPhotoViewer();
+            });
+            
+            // 滑动支持
+            let touchStartX = 0;
+            
+            photoViewer.addEventListener('touchstart', function(e) {
+                touchStartX = e.touches[0].clientX;
+            });
+            
+            photoViewer.addEventListener('touchend', function(e) {
+                const touchEndX = e.changedTouches[0].clientX;
+                const diffX = touchStartX - touchEndX;
+                
+                // 滑动距离超过50px视为有效滑动
+                if (Math.abs(diffX) > 50) {
+                    if (diffX > 0) {
+                        // 向右滑动 - 下一张
+                        currentPhotoIndex = (currentPhotoIndex + 1) % photos.length;
+                    } else {
+                        // 向左滑动 - 上一张
+                        currentPhotoIndex = (currentPhotoIndex - 1 + photos.length) % photos.length;
+                    }
+                    openPhotoViewer();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
