@@ -373,7 +373,7 @@
     </div>
     
     <!-- 主内容区 -->
- <div class="main-content" id="mainContent">
+    <div class="main-content" id="mainContent">
         <div class="header">
             <h1 class="main-title">美好时光相册</h1>
             <p class="subtitle">每一次相聚都是珍贵的回忆</p>
@@ -443,7 +443,7 @@
     
     <!-- 背景音乐 -->
     <audio id="bgMusic" loop>
-        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+        <source src="music/background.mp3" type="audio/mpeg">
     </audio>
     
     <script>
@@ -462,14 +462,14 @@
             const nextBtn = document.getElementById('nextBtn');
             const bgMusic = document.getElementById('bgMusic');
             
-            // 照片数据
+            // 照片数据 - 已适配你的6张照片
             const photos = [
-                {img: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=600&w=400", caption: "周末的欢乐聚会，笑声不断"},
-                {img: "https://images.unsplash.com/photo-1543269865-cbf427effbad?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=600&w=400", caption: "难忘的毕业旅行，青春不散场"},
-                {img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=600&w=400", caption: "特别的生日，有你们才完整"},
-                {img: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=600&w=400", caption: "夏夜烧烤，星空下的畅谈"},
-                {img: "https://images.unsplash.com/photo-1532635241-17e820acc59f?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=600&w=400", caption: "海边的日出，新一天的开始"},
-                {img: "https://images.unsplash.com/photo-1502685104226-ee32379fefbe?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=600&w=400", caption: "圣诞夜的温暖，友谊的礼物"}
+                {img: "images/photo1.jpg", caption: "这是我们第一次旅行的美好记忆"},
+                {img: "images/photo2.jpg", caption: "生日派对的欢乐时光"},
+                {img: "images/photo3.jpg", caption: "一起看日落的浪漫时刻"},
+                {img: "images/photo4.jpg", caption: "周末聚餐的欢声笑语"},
+                {img: "images/photo5.jpg", caption: "户外冒险的刺激体验"},
+                {img: "images/photo6.jpg", caption: "节日庆祝的温馨氛围"}
             ];
             
             let currentPhotoIndex = 0;
