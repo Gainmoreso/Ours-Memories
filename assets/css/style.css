@@ -196,6 +196,7 @@ body {
   flex-direction: column;
   align-items: center;
   gap: 20px;
+  position: relative;
 }
 
 #memoryVideo {
@@ -226,6 +227,7 @@ body {
   padding: 5px 15px;
   background: rgba(0,0,0,0.3);
   border-radius: 20px;
+  z-index: 10;
 }
 
 #finalMessage {
@@ -303,7 +305,7 @@ body {
   background: #fffafc;
 }
 
-.messageBubble {
+.message-item {
   background: #ffe6f2;
   padding: 12px 18px;
   border-radius: 18px;
@@ -312,6 +314,106 @@ body {
   box-shadow: 0 3px 8px rgba(0,0,0,0.05);
   word-break: break-word;
 }
+
+/* 开场动画增强效果 */
+#introScreen {
+  /* 保持原有渐变背景 */
+  background: linear-gradient(135deg, #ff9dcf, #ffcce0, #b3e0ff, #80ccff);
+  background-size: 400% 400%;
+  animation: gradientBG 15s ease infinite;
+  
+  /* 新增效果 */
+  overflow: hidden;
+  position: relative;
+}
+
+/* 添加浮动粒子效果 */
+.particle {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.7);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+  animation: float 15s infinite linear;
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(100vh) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100px) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+/* 增强标题动画 */
+.intro-title {
+  perspective: 1000px;
+}
+
+.title-line {
+  transform: translateY(30px) rotateX(90deg);
+  opacity: 0;
+  animation: titleAppear 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  transform-origin: bottom;
+}
+
+@keyframes titleAppear {
+  to {
+    opacity: 1;
+    transform: translateY(0) rotateX(0);
+  }
+}
+
+/* 增强按钮效果 */
+.intro-button {
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.intro-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(45deg, #ff9dcf, #ff6b9d, #b3e0ff, #80ccff);
+  background-size: 400% 400%;
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  animation: gradientBG 8s ease infinite;
+}
+
+.intro-button:hover::before {
+  opacity: 1;
+}
+
+.intro-button:hover {
+  color: white;
+  transform: translateY(-5px) scale(1.05);
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.3);
+}
+
+.intro-button:hover i {
+  color: white;
+  animation: heartbeat 1s infinite;
+}
+
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+}
+
 
 @keyframes gradientBG {
   0% { background-position: 0% 50%; }
@@ -329,4 +431,152 @@ body {
 @keyframes danmuMove {
   from { transform: translateX(100vw); }
   to { transform: translateX(-100%); }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* 粒子效果 */
+.particle {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.7);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+  animation: float 15s infinite linear;
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(100vh) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100px) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+/* 照片翻页效果 */
+.fade-transition {
+  transition: opacity 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.fade-out {
+  opacity: 0 !important;
+}
+
+.fade-in {
+  opacity: 1 !important;
+}
+
+@keyframes pageTurn {
+  0% {
+    transform: rotateY(0) scale(1);
+  }
+  50% {
+    transform: rotateY(90deg) scale(0.8);
+    opacity: 0.5;
+  }
+  100% {
+    transform: rotateY(0) scale(1);
+  }
+}
+
+@keyframes pageTurnPrev {
+  0% {
+    transform: rotateY(0) scale(1);
+  }
+  50% {
+    transform: rotateY(-90deg) scale(0.8);
+    opacity: 0.5;
+  }
+  100% {
+    transform: rotateY(0) scale(1);
+  }
+}
+
+/* 最终消息样式 */
+#finalMessage {
+  background: linear-gradient(to bottom, #2c3e50, #1a1a2e);
+  color: #fff;
+  font-family: 'Ma Shan Zheng', cursive;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.poem-container {
+  max-width: 600px;
+  text-align: center;
+  padding: 30px;
+}
+
+.poem-line {
+  font-size: 2.2rem;
+  line-height: 1.6;
+  margin: 15px 0;
+  opacity: 0;
+  transform: translateY(30px);
+  filter: blur(5px);
+  transition: all 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.poem-line.visible {
+  opacity: 1;
+  transform: translateY(0);
+  filter: blur(0);
+}
+
+/* 添加装饰元素 */
+.poem-container::before,
+.poem-container::after {
+  content: "❦";
+  position: absolute;
+  font-size: 3rem;
+  color: rgba(255, 255, 255, 0.1);
+}
+
+.poem-container::before {
+  top: 20px;
+  left: 20px;
+}
+
+.poem-container::after {
+  bottom: 20px;
+  right: 20px;
+  transform: rotate(180deg);
+}
+
+/* 照片增强效果 */
+#slideshowImage {
+  border: 5px solid white;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+/* 增强标题效果 */
+#captionText {
+  font-size: 1.6rem;
+  color: #5a5a5a;
+  padding: 15px 25px;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.8s ease;
+  max-width: 90%;
 }
