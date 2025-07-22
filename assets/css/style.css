@@ -1,63 +1,211 @@
-body {
+/* style.css：主样式文件 */
+@import url('https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Sans+SC:wght@400;500;700&display=swap');
+
+* {
   margin: 0;
-  font-family: 'Helvetica Neue', sans-serif;
-  background: #fff0f6;
-  color: #333;
-  text-align: center;
+  padding: 0;
+  box-sizing: border-box;
+  touch-action: manipulation;
 }
 
-.hidden { display: none; }
-
-#opening {
+body {
+  font-family: 'Noto Sans SC', sans-serif;
+  background: #fff9fc;
+  color: #333;
   height: 100vh;
+  overflow: hidden;
+  position: relative;
+}
+
+#introScreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #ff9dcf, #ffcce0, #b3e0ff, #80ccff);
+  background-size: 400% 400%;
+  animation: gradientBG 15s ease infinite;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  z-index: 1000;
+  padding: 20px;
 }
 
-.animated-title {
-  font-size: 3em;
-  animation: fadeIn 3s ease-in-out;
-  font-family: 'Cursive', sans-serif;
+.intro-content {
+  text-align: center;
+  padding: 20px;
+  width: 100%;
+  max-width: 400px;
 }
 
-#startBtn {
-  margin-top: 20px;
-  padding: 10px 20px;
-  font-size: 1.2em;
-  background-color: #ff9dcf;
-  border: none;
-  border-radius: 12px;
-  cursor: pointer;
+.intro-title {
+  font-family: 'Ma Shan Zheng', cursive;
   color: white;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  margin-bottom: 40px;
 }
 
-#photoSlideshow #photo {
+.title-line {
+  font-size: 2.8rem;
+  line-height: 1.3;
+  opacity: 0;
+  transform: translateY(30px);
+  animation: fadeUp 1.2s forwards;
+}
+
+.title-line:first-child {
+  animation-delay: 0.5s;
+}
+
+.title-line:last-child {
+  animation-delay: 1s;
+}
+
+.intro-button {
+  background: rgba(255, 255, 255, 0.95);
+  border: none;
+  border-radius: 50px;
+  padding: 16px 40px;
+  font-size: 1.6rem;
+  font-weight: bold;
+  color: #ff6b9d;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(255, 107, 157, 0.4);
+  transition: all 0.4s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  opacity: 0;
+  transform: translateY(30px);
+  animation: fadeUp 0.8s forwards 1.8s;
+  margin: 0 auto;
   width: 80%;
-  max-height: 60vh;
-  object-fit: cover;
-  border-radius: 15px;
-  transition: transform 1s ease-in-out, opacity 1s ease-in-out;
+  max-width: 280px;
 }
 
-#photoCaption {
-  font-style: italic;
-  margin-top: 10px;
-  color: #666;
+.intro-button:hover {
+  transform: translateY(-5px) scale(1.05);
+  box-shadow: 0 12px 25px rgba(255, 107, 157, 0.6);
+}
+
+.intro-button i {
+  color: #ff6b9d;
+  font-size: 1.4rem;
+}
+
+.section {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.8s ease, visibility 0.8s;
+  background: linear-gradient(to bottom, #ffeff8, #e0f3ff);
+}
+
+.section.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.photo-container {
+  width: 100%;
+  max-width: 400px;
+  height: 65vh;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+#slideshowImage {
+  width: 100%;
+  height: 85%;
+  object-fit: contain;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+  transition: opacity 0.8s ease;
+  opacity: 0;
+}
+
+#slideshowImage.visible {
+  opacity: 1;
+}
+
+#captionText {
+  margin-top: 20px;
+  font-size: 1.4rem;
+  text-align: center;
+  color: #5a5a5a;
+  padding: 0 15px;
+  font-weight: 500;
+  line-height: 1.5;
+  max-height: 15%;
+  overflow: auto;
+  font-family: 'Ma Shan Zheng', cursive;
+}
+
+.nav-controls {
+  position: absolute;
+  bottom: 30px;
+  display: flex;
+  gap: 30px;
+}
+
+.nav-btn {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  border: 2px solid #ff9dcf;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.8rem;
+  color: #ff6b9d;
+  cursor: pointer;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+}
+
+.nav-btn:active {
+  transform: scale(0.95);
+  background: white;
 }
 
 #videoSection {
-  position: relative;
-  margin: 40px auto;
+  background: #f0f8ff;
+}
+
+.video-container {
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
 }
 
 #memoryVideo {
-  width: 80%;
-  border-radius: 10px;
+  width: 100%;
+  max-height: 60vh;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
 }
 
-#danmuContainer {
+#danmakuContainer {
   position: absolute;
   top: 0;
   left: 0;
@@ -67,67 +215,118 @@ body {
   overflow: hidden;
 }
 
-.danmu {
+.danmaku {
   position: absolute;
   white-space: nowrap;
-  font-size: 16px;
-  color: #fff;
-  text-shadow: 1px 1px 3px #000;
-  animation: danmuMove 10s linear forwards;
+  font-size: 1.5rem;
+  color: white;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
+  animation: danmuMove 8s linear forwards;
+  font-family: 'Ma Shan Zheng', cursive;
+  padding: 5px 15px;
+  background: rgba(0,0,0,0.3);
+  border-radius: 20px;
 }
 
-#quoteSection .quote {
-  font-size: 1.6em;
-  margin: 40px;
-  color: #4b0082;
-  font-weight: bold;
+#finalMessage {
+  font-size: 2.5rem;
+  text-align: center;
+  color: #ff6b9d;
+  font-family: 'Ma Shan Zheng', cursive;
+  padding: 0 20px;
+  line-height: 1.4;
+  max-width: 400px;
+  text-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
 #messageBoard {
-  padding: 20px;
-  background: #fff;
+  background: white;
 }
 
-#messageForm input,
+.message-content {
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+}
+
+#messageForm {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 100%;
+}
+
+#messageForm input, 
 #messageForm textarea {
-  width: 80%;
-  margin: 10px 0;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 10px;
-  font-size: 1em;
+  width: 100%;
+  padding: 14px;
+  border: 2px solid #ffcce0;
+  border-radius: 12px;
+  font-size: 1.2rem;
+  font-family: 'Noto Sans SC', sans-serif;
+  background: #fffafc;
+}
+
+#messageForm textarea {
+  height: 120px;
+  resize: none;
 }
 
 #messageForm button {
-  background-color: #ff80ab;
-  border: none;
+  background: linear-gradient(to right, #ff9dcf, #ff6b9d);
   color: white;
-  padding: 10px 20px;
-  border-radius: 10px;
+  border: none;
+  padding: 16px;
+  border-radius: 12px;
+  font-size: 1.4rem;
+  font-weight: bold;
   cursor: pointer;
+  box-shadow: 0 5px 15px rgba(255, 107, 157, 0.4);
+  transition: all 0.3s ease;
 }
 
-#messages {
-  margin-top: 20px;
+#messageForm button:active {
+  transform: translateY(3px);
+  box-shadow: 0 2px 8px rgba(255, 107, 157, 0.4);
 }
 
-.message {
-  background: #ffe4f0;
-  padding: 10px 15px;
-  border-radius: 15px;
-  margin: 10px auto;
-  width: fit-content;
-  max-width: 70%;
-  font-size: 0.95em;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+#messagesContainer {
+  width: 100%;
+  max-height: 40vh;
+  overflow-y: auto;
+  padding: 10px;
+  border: 2px solid #ffe6f2;
+  border-radius: 12px;
+  background: #fffafc;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-20px); }
-  to { opacity: 1; transform: translateY(0); }
+.messageBubble {
+  background: #ffe6f2;
+  padding: 12px 18px;
+  border-radius: 18px;
+  margin: 10px 0;
+  font-size: 1.2rem;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.05);
+  word-break: break-word;
+}
+
+@keyframes gradientBG {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes fadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes danmuMove {
-  from { left: 100%; }
-  to { left: -100%; }
+  from { transform: translateX(100vw); }
+  to { transform: translateX(-100%); }
 }
