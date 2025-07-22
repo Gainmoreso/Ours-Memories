@@ -2,41 +2,606 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ours Memories - 我们的回忆</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>我们的回忆</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Sans+SC&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    /* 添加CSS到HTML中以便于整合 */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      touch-action: manipulation;
+    }
+    
+    body {
+      font-family: 'Noto Sans SC', sans-serif;
+      background: #fff9fc;
+      color: #333;
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+    
+    /* 开场动画 */
+    #introScreen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #ff9dcf, #ffcce0, #b3e0ff, #80ccff);
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      padding: 20px;
+    }
+    
+    .intro-content {
+      text-align: center;
+      padding: 20px;
+      width: 100%;
+      max-width: 400px;
+    }
+    
+    .intro-title {
+      font-family: 'Ma Shan Zheng', cursive;
+      color: white;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      margin-bottom: 40px;
+    }
+    
+    .title-line {
+      font-size: 2.8rem;
+      line-height: 1.3;
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeUp 1.2s forwards;
+    }
+    
+    .title-line:first-child {
+      animation-delay: 0.5s;
+    }
+    
+    .title-line:last-child {
+      animation-delay: 1s;
+    }
+    
+    .intro-button {
+      background: rgba(255, 255, 255, 0.95);
+      border: none;
+      border-radius: 50px;
+      padding: 16px 40px;
+      font-size: 1.6rem;
+      font-weight: bold;
+      color: #ff6b9d;
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(255, 107, 157, 0.4);
+      transition: all 0.4s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeUp 0.8s forwards 1.8s;
+      margin: 0 auto;
+      width: 80%;
+      max-width: 280px;
+    }
+    
+    .intro-button:hover {
+      transform: translateY(-5px) scale(1.05);
+      box-shadow: 0 12px 25px rgba(255, 107, 157, 0.6);
+    }
+    
+    .intro-button i {
+      color: #ff6b9d;
+      font-size: 1.4rem;
+    }
+    
+    /* 照片幻灯片 */
+    .section {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.8s ease, visibility 0.8s;
+      background: linear-gradient(to bottom, #ffeff8, #e0f3ff);
+    }
+    
+    .section.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .photo-container {
+      width: 100%;
+      max-width: 400px;
+      height: 65vh;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    #slideshowImage {
+      width: 100%;
+      height: 85%;
+      object-fit: contain;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+      transition: opacity 0.8s ease;
+      opacity: 0;
+    }
+    
+    #slideshowImage.visible {
+      opacity: 1;
+    }
+    
+    #captionText {
+      margin-top: 20px;
+      font-size: 1.4rem;
+      text-align: center;
+      color: #5a5a5a;
+      padding: 0 15px;
+      font-weight: 500;
+      line-height: 1.5;
+      max-height: 15%;
+      overflow: auto;
+      font-family: 'Ma Shan Zheng', cursive;
+    }
+    
+    .nav-controls {
+      position: absolute;
+      bottom: 30px;
+      display: flex;
+      gap: 30px;
+    }
+    
+    .nav-btn {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.9);
+      border: 2px solid #ff9dcf;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1.8rem;
+      color: #ff6b9d;
+      cursor: pointer;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+    }
+    
+    .nav-btn:active {
+      transform: scale(0.95);
+      background: white;
+    }
+    
+    /* 视频部分 */
+    #videoSection {
+      background: #f0f8ff;
+    }
+    
+    .video-container {
+      width: 100%;
+      max-width: 400px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+    
+    #memoryVideo {
+      width: 100%;
+      max-height: 60vh;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    }
+    
+    #danmakuContainer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    
+    .danmaku {
+      position: absolute;
+      white-space: nowrap;
+      font-size: 1.5rem;
+      color: white;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
+      animation: danmuMove 8s linear forwards;
+      font-family: 'Ma Shan Zheng', cursive;
+      padding: 5px 15px;
+      background: rgba(0,0,0,0.3);
+      border-radius: 20px;
+    }
+    
+    /* 最终消息 */
+    #finalMessage {
+      font-size: 2.5rem;
+      text-align: center;
+      color: #ff6b9d;
+      font-family: 'Ma Shan Zheng', cursive;
+      padding: 0 20px;
+      line-height: 1.4;
+      max-width: 400px;
+      text-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    
+    /* 留言板 */
+    #messageBoard {
+      background: white;
+    }
+    
+    .message-content {
+      width: 100%;
+      max-width: 400px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      padding: 20px;
+    }
+    
+    #messageForm {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      width: 100%;
+    }
+    
+    #messageForm input, 
+    #messageForm textarea {
+      width: 100%;
+      padding: 14px;
+      border: 2px solid #ffcce0;
+      border-radius: 12px;
+      font-size: 1.2rem;
+      font-family: 'Noto Sans SC', sans-serif;
+      background: #fffafc;
+    }
+    
+    #messageForm textarea {
+      height: 120px;
+      resize: none;
+    }
+    
+    #messageForm button {
+      background: linear-gradient(to right, #ff9dcf, #ff6b9d);
+      color: white;
+      border: none;
+      padding: 16px;
+      border-radius: 12px;
+      font-size: 1.4rem;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 5px 15px rgba(255, 107, 157, 0.4);
+      transition: all 0.3s ease;
+    }
+    
+    #messageForm button:active {
+      transform: translateY(3px);
+      box-shadow: 0 2px 8px rgba(255, 107, 157, 0.4);
+    }
+    
+    #messagesContainer {
+      width: 100%;
+      max-height: 40vh;
+      overflow-y: auto;
+      padding: 10px;
+      border: 2px solid #ffe6f2;
+      border-radius: 12px;
+      background: #fffafc;
+    }
+    
+    .messageBubble {
+      background: #ffe6f2;
+      padding: 12px 18px;
+      border-radius: 18px;
+      margin: 10px 0;
+      font-size: 1.2rem;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.05);
+      word-break: break-word;
+    }
+    
+    /* 动画 */
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    
+    @keyframes fadeUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    @keyframes danmuMove {
+      from { transform: translateX(100vw); }
+      to { transform: translateX(-100%); }
+    }
+  </style>
 </head>
 <body>
   <!-- 开场动画 -->
-  <div id="introScreen" class="intro-screen">
-    <div class="intro-title">欢迎来到我们的回忆</div>
-    <button id="startButton" class="intro-button">点击开始</button>
-  </div>
-
-  <!-- 主内容 -->
-  <div id="mainContent" class="main-content" style="display: none;">
-    <!-- 音乐播放按钮 -->
-    <button id="musicBtn" class="music-btn">
-      <i class="fas fa-music"></i>
-    </button>
-    <audio id="bgMusic" src="assets/music/music.mp3" loop></audio>
-
-    <!-- 照片墙 -->
-    <div class="photo-wall"></div>
-
-    <!-- 图片查看器 -->
-    <div id="photoViewer" class="photo-viewer">
-      <button id="closeViewer" class="close-btn"><i class="fas fa-times"></i></button>
-      <img id="viewerImage" src="" alt="预览">
-      <div id="viewerCaption" class="viewer-caption"></div>
-      <button id="prevBtn" class="nav-btn prev-btn"><i class="fas fa-chevron-left"></i></button>
-      <button id="nextBtn" class="nav-btn next-btn"><i class="fas fa-chevron-right"></i></button>
+  <div id="introScreen">
+    <div class="intro-content">
+      <div class="intro-title">
+        <div class="title-line">那些与朋友共度的美好时光</div>
+        <div class="title-line">永远珍藏在心底</div>
+      </div>
+      <button id="startButton" class="intro-button">
+        <span>开启回忆</span>
+        <i class="fas fa-heart"></i>
+      </button>
     </div>
   </div>
+  
+  <!-- 照片幻灯片 -->
+  <div id="photoSection" class="section">
+    <div class="photo-container">
+      <img id="slideshowImage" src="" alt="回忆照片">
+      <div id="captionText"></div>
+    </div>
+    <div class="nav-controls">
+      <button id="prevPhoto" class="nav-btn"><i class="fas fa-chevron-left"></i></button>
+      <button id="nextPhoto" class="nav-btn"><i class="fas fa-chevron-right"></i></button>
+    </div>
+  </div>
+  
+  <!-- 视频部分 -->
+  <div id="videoSection" class="section">
+    <div class="video-container">
+      <video id="memoryVideo" controls>
+        <source src="assets/videos/video1.mp4" type="video/mp4">
+      </video>
+      <div id="danmakuContainer"></div>
+    </div>
+  </div>
+  
+  <!-- 最终消息 -->
+  <div id="finalMessage" class="section">
+    我们的故事，未完待续...
+  </div>
+  
+  <!-- 留言板 -->
+  <div id="messageBoard" class="section">
+    <div class="message-content">
+      <h2 style="font-size: 2.2rem; color: #ff6b9d; font-family: 'Ma Shan Zheng', cursive;">留言板</h2>
+      <form id="messageForm">
+        <input type="text" id="nameInput" placeholder="你的名字" required>
+        <textarea id="messageInput" placeholder="写下你的祝福..." required></textarea>
+        <button type="submit">提交留言</button>
+      </form>
+      <div id="messagesContainer"></div>
+    </div>
+  </div>
+  
+  <!-- 背景音乐 -->
+  <audio id="bgMusic" loop>
+    <source src="assets/music/music.mp3" type="audio/mp3">
+  </audio>
 
-  <script src="main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const bgm = document.getElementById('bgMusic');
+      const introScreen = document.getElementById('introScreen');
+      const startButton = document.getElementById('startButton');
+      const photoSection = document.getElementById('photoSection');
+      const slideshowImage = document.getElementById('slideshowImage');
+      const captionText = document.getElementById('captionText');
+      const videoSection = document.getElementById('videoSection');
+      const memoryVideo = document.getElementById('memoryVideo');
+      const danmakuContainer = document.getElementById('danmakuContainer');
+      const finalMessage = document.getElementById('finalMessage');
+      const messageBoard = document.getElementById('messageBoard');
+      const nameInput = document.getElementById('nameInput');
+      const messageInput = document.getElementById('messageInput');
+      const messagesContainer = document.getElementById('messagesContainer');
+      const prevPhotoBtn = document.getElementById('prevPhoto');
+      const nextPhotoBtn = document.getElementById('nextPhoto');
+      
+      // 照片数据
+      const photos = Array.from({length: 20}, (_, i) => ({
+        src: `assets/images/photo${i+1}.jpg`,
+        caption: `照片 ${i+1} 的珍贵时刻 ${2020 + i}年`
+      }));
+      
+      let currentIndex = 0;
+      let photoTimer;
+      
+      // 开始按钮点击事件
+      startButton.addEventListener('click', () => {
+        // 开始播放背景音乐
+        bgm.play().catch(e => console.log("自动播放被阻止，请手动播放"));
+        
+        // 隐藏开场动画
+        introScreen.style.opacity = '0';
+        
+        setTimeout(() => {
+          introScreen.style.display = 'none';
+          
+          // 显示照片幻灯片
+          photoSection.classList.add('active');
+          
+          // 开始幻灯片播放
+          startSlideshow();
+        }, 800);
+      });
+      
+      // 显示照片
+      function showPhoto(index) {
+        slideshowImage.classList.remove('visible');
+        setTimeout(() => {
+          slideshowImage.src = photos[index].src;
+          captionText.textContent = photos[index].caption;
+          slideshowImage.classList.add('visible');
+        }, 500);
+      }
+      
+      // 下一张照片
+      function nextPhoto() {
+        currentIndex = (currentIndex + 1) % photos.length;
+        showPhoto(currentIndex);
+        
+        // 如果到达最后一张，准备过渡到视频
+        if (currentIndex === photos.length - 1) {
+          clearInterval(photoTimer);
+          setTimeout(transitionToVideo, 2500);
+        }
+      }
+      
+      // 上一张照片
+      function prevPhoto() {
+        currentIndex = (currentIndex - 1 + photos.length) % photos.length;
+        showPhoto(currentIndex);
+        
+        // 重置计时器
+        clearInterval(photoTimer);
+        photoTimer = setInterval(nextPhoto, 2500);
+      }
+      
+      // 开始幻灯片播放
+      function startSlideshow() {
+        showPhoto(currentIndex);
+        photoTimer = setInterval(nextPhoto, 2500);
+      }
+      
+      // 导航按钮事件
+      prevPhotoBtn.addEventListener('click', prevPhoto);
+      nextPhotoBtn.addEventListener('click', nextPhoto);
+      
+      // 过渡到视频
+      function transitionToVideo() {
+        photoSection.classList.remove('active');
+        videoSection.classList.add('active');
+        
+        // 显示弹幕
+        showDanmaku([
+          '这是我们最美的回忆',
+          '还记得那个夏天吗？',
+          '一起走过的风景',
+          '时光不老，我们不散',
+          '友谊地久天长',
+          '永远珍藏这一刻',
+          '感谢有你陪伴',
+          '最好的时光，最好的我们'
+        ]);
+        
+        // 播放视频
+        setTimeout(() => {
+          memoryVideo.play().catch(e => console.log("视频播放需要用户交互"));
+        }, 500);
+      }
+      
+      // 显示弹幕
+      function showDanmaku(messages) {
+        // 初始弹幕
+        messages.forEach((msg, i) => {
+          setTimeout(() => {
+            createDanmaku(msg);
+          }, i * 1500);
+        });
+        
+        // 持续添加弹幕
+        setInterval(() => {
+          const randomMsg = messages[Math.floor(Math.random() * messages.length)];
+          createDanmaku(randomMsg);
+        }, 3000);
+      }
+      
+      // 创建单个弹幕
+      function createDanmaku(msg) {
+        const span = document.createElement('span');
+        span.className = 'danmaku';
+        span.textContent = msg;
+        span.style.top = `${Math.random() * 70 + 10}%`;
+        span.style.fontSize = `${Math.random() * 10 + 18}px`;
+        span.style.opacity = `${Math.random() * 0.5 + 0.5}`;
+        danmakuContainer.appendChild(span);
+        
+        // 动画结束后移除
+        setTimeout(() => {
+          danmakuContainer.removeChild(span);
+        }, 8000);
+      }
+      
+      // 视频结束事件
+      memoryVideo.onended = () => {
+        videoSection.classList.remove('active');
+        finalMessage.classList.add('active');
+        
+        setTimeout(() => {
+          finalMessage.classList.remove('active');
+          messageBoard.classList.add('active');
+        }, 3000);
+      };
+      
+      // 留言提交
+      document.getElementById('messageForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const name = nameInput.value.trim();
+        const message = messageInput.value.trim();
+        
+        if (name && message) {
+          // 创建留言
+          const div = document.createElement('div');
+          div.className = 'messageBubble';
+          div.textContent = `${name}: ${message}`;
+          messagesContainer.appendChild(div);
+          
+          // 滚动到底部
+          messagesContainer.scrollTop = messagesContainer.scrollHeight;
+          
+          // 清空输入
+          nameInput.value = '';
+          messageInput.value = '';
+        }
+      });
+      
+      // 触摸滑动切换照片
+      let touchStartX = 0;
+      
+      photoSection.addEventListener('touchstart', (e) => {
+        touchStartX = e.touches[0].clientX;
+      });
+      
+      photoSection.addEventListener('touchend', (e) => {
+        const touchEndX = e.changedTouches[0].clientX;
+        const diffX = touchEndX - touchStartX;
+        
+        if (Math.abs(diffX) > 50) {
+          if (diffX > 0) {
+            prevPhoto();
+          } else {
+            nextPhoto();
+          }
+        }
+      });
+    });
+  </script>
 </body>
 </html>
-
