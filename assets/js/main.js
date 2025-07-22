@@ -1,105 +1,94 @@
-// main.js - 主交互逻辑
+// main.js：主功能脚本
 
+document.addEventListener("DOMContentLoaded", function () {
+  // 开场动画控制
+  const introScreen = document.getElementById("introScreen");
+  const startButton = document.getElementById("startButton");
+  const bgMusic = document.getElementById("bgMusic");
 
-document.addEventListener('DOMContentLoaded', () => {
-  const bgm = document.getElementById('bgMusic');
-  const introScreen = document.getElementById('introScreen');
-  const startButton = document.getElementById('startButton');
-  const photoSection = document.getElementById('photoSection');
-  const slideshowImage = document.getElementById('slideshowImage');
-  const captionText = document.getElementById('captionText');
-  const videoSection = document.getElementById('videoSection');
-  const memoryVideo = document.getElementById('memoryVideo');
-  const danmakuContainer = document.getElementById('danmakuContainer');
-  const finalMessage = document.getElementById('finalMessage');
-  const messageBoard = document.getElementById('messageBoard');
-  const nameInput = document.getElementById('nameInput');
-  const messageInput = document.getElementById('messageInput');
-  const messagesContainer = document.getElementById('messagesContainer');
-
-  const photos = Array.from({length: 20}, (_, i) => `assets/photos/photo${i+1}.jpg`);
-  const captions = Array.from({length: 20}, (_, i) => `照片 ${i+1} 的文艺描述`);
-
-  let currentIndex = 0;
-  let photoTimer;
-
-  startButton.addEventListener('click', () => {
-    introScreen.style.display = 'none';
-    photoSection.classList.remove('hidden');
-    startSlideshow();
+  startButton.addEventListener("click", () => {
+    introScreen.style.display = "none";
+    bgMusic.play();
   });
 
-  function showPhoto(index) {
-    slideshowImage.classList.remove('visible');
-    setTimeout(() => {
-      slideshowImage.src = photos[index];
-      captionText.textContent = captions[index];
-      slideshowImage.classList.add('visible');
-    }, 500);
+  // 照片幻灯片控制
+  const photos = [
+    { src: "assets/images/photo1.jpg", caption: "我们一起走过的第一步" },
+    { src: "assets/images/photo2.jpg", caption: "那次阳光灿烂的旅行" },
+    { src: "assets/images/photo3.jpg", caption: "友情的每一个瞬间" },
+    // 更多照片...
+  ];
+
+  let currentPhotoIndex = 0;
+  const slideshowImage = document.getElementById("slideshowImage");
+  const captionText = document.getElementById("captionText");
+
+  function updateSlideshow() {
+    const photo = photos[currentPhotoIndex];
+    slideshowImage.src = photo.src;
+    captionText.textContent = photo.caption;
   }
 
-  function nextPhoto() {
-    currentIndex = (currentIndex + 1) % photos.length;
-    showPhoto(currentIndex);
-  }
+  document.getElementById("prevPhoto").addEventListener("click", () => {
+    currentPhotoIndex = (currentPhotoIndex - 1 + photos.length) % photos.length;
+    updateSlideshow();
+  });
 
-  function startSlideshow() {
-    showPhoto(currentIndex);
-    photoTimer = setInterval(() => {
-      currentIndex++;
-      if (currentIndex >= photos.length) {
-        clearInterval(photoTimer);
-        transitionToVideo();
-      } else {
-        showPhoto(currentIndex);
-      }
-    }, 4000);
-  }
+  document.getElementById("nextPhoto").addEventListener("click", () => {
+    currentPhotoIndex = (currentPhotoIndex + 1) % photos.length;
+    updateSlideshow();
+  });
 
-  document.getElementById('nextPhoto').onclick = nextPhoto;
-  document.getElementById('prevPhoto').onclick = () => {
-    currentIndex = (currentIndex - 1 + photos.length) % photos.length;
-    showPhoto(currentIndex);
-  };
+  updateSlideshow();
 
-  function transitionToVideo() {
-    photoSection.classList.add('hidden');
-    videoSection.classList.remove('hidden');
-    showDanmaku(['这是我们最美的回忆', '还记得那个夏天吗？', '一起走过的风景']);
-    memoryVideo.play();
-  }
+  // 留言板功能
+  const messageForm = document.getElementById("messageForm");
+  const nameInput = document.getElementById("nameInput");
+  const messageInput = document.getElementById("messageInput");
+  const messagesContainer = document.getElementById("messagesContainer");
 
-  function showDanmaku(messages) {
-    messages.forEach(msg => {
-      const span = document.createElement('span');
-      span.className = 'danmaku';
-      span.textContent = msg;
-      span.style.top = `${Math.random() * 60 + 10}%`;
-      danmakuContainer.appendChild(span);
-      setTimeout(() => danmakuContainer.removeChild(span), 10000);
-    });
-  }
-
-  memoryVideo.onended = () => {
-    videoSection.classList.add('hidden');
-    finalMessage.classList.remove('hidden');
-    setTimeout(() => {
-      finalMessage.classList.add('hidden');
-      messageBoard.classList.remove('hidden');
-    }, 3000);
-  };
-
-  document.getElementById('messageForm').addEventListener('submit', (e) => {
+  messageForm.addEventListener("submit", function (e) {
     e.preventDefault();
     const name = nameInput.value.trim();
     const message = messageInput.value.trim();
+
     if (name && message) {
-      const div = document.createElement('div');
-      div.className = 'messageBubble';
-      div.textContent = `${name}: ${message}`;
-      messagesContainer.appendChild(div);
-      nameInput.value = '';
-      messageInput.value = '';
+      const msgDiv = document.createElement("div");
+      msgDiv.className = "message-item";
+      msgDiv.innerHTML = `<strong>${name}</strong>：${message}`;
+      messagesContainer.prepend(msgDiv);
+
+      messageInput.value = "";
     }
   });
+
+  // 视频弹幕（简化示例）
+  const video = document.getElementById("memoryVideo");
+  const danmakuContainer = document.getElementById("danmakuContainer");
+
+  const danmakus = ["太美了！", "满满的回忆！", "还想去！", "友谊万岁✨"];
+
+  video.addEventListener("play", () => {
+    danmakus.forEach((text, i) => {
+      setTimeout(() => createDanmaku(text), i * 1500);
+    });
+  });
+
+  function createDanmaku(text) {
+    const span = document.createElement("span");
+    span.className = "danmaku";
+    span.textContent = text;
+    span.style.top = `${Math.random() * 80}%`;
+    danmakuContainer.appendChild(span);
+
+    span.animate([
+      { transform: "translateX(100%)" },
+      { transform: "translateX(-100%)" }
+    ], {
+      duration: 8000,
+      easing: "linear"
+    });
+
+    setTimeout(() => danmakuContainer.removeChild(span), 8000);
+  }
 });
