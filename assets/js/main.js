@@ -8,7 +8,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
   startButton.addEventListener("click", () => {
     introScreen.style.display = "none";
-    bgMusic.play();
+  
+    // 显示第一个section（照片部分）并添加active类
+    const firstSection = document.getElementById("photoSection");
+    firstSection.classList.add("active");
+  
+    // 确保照片可见
+    slideshowImage.classList.add("visible");
+  
+    // 尝试播放音乐
+    bgMusic.play().catch(e => {
+      console.log("音乐自动播放被阻止:", e);
+    });
   });
 
   // 照片幻灯片控制
