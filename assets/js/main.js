@@ -12,8 +12,6 @@ document.addEventListener("DOMContentLoaded", () => {
     initIntro();
     initSlideshow();
     initVideoDanmaku();
-    initMessageBoard();
-    initPoemDisplay();
 
     // ========== 开场动画 ==========
     function initIntro() {
@@ -225,35 +223,9 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // ========== 留言板 ==========
-    function initMessageBoard() {
-        const form = document.getElementById("messageForm");
-        const nameInput = document.getElementById("nameInput");
-        const messageInput = document.getElementById("messageInput");
-        const container = document.getElementById("messagesContainer");
 
-        form.addEventListener("submit", e => {
-            e.preventDefault();
-            const name = nameInput.value.trim();
-            const message = messageInput.value.trim();
-
-            if (name && message) {
-                const msgDiv = document.createElement("div");
-                msgDiv.className = "message-item";
-                msgDiv.innerHTML = `<strong>${name}</strong>：${message}`;
-                container.prepend(msgDiv);
-
-                nameInput.value = "";
-                messageInput.value = "";
-            }
-        });
-    }
 
     // ========== 诗歌展示 ==========
-    function initPoemDisplay() {
-        // 空占位，用于在 video ended 中调用
-    }
-
     async function showPoemLines() {
         const lines = document.querySelectorAll(".poem-line");
         const poemStage = document.getElementById("poemStage");
