@@ -40,11 +40,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // 添加点击事件
         startButton.addEventListener("click", () => {
+            bgMusic.play();
             sections.intro.style.display = "none";
             requestAnimationFrame(() => {
                 showSection(sections.photo);
             });
-            bgMusic.play();
         });
     }
 
