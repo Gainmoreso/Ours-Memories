@@ -64,6 +64,25 @@ body {
   animation-delay: 1s;
 }
 
+@keyframes fadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes gradientBG {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
 .intro-button {
   background: rgba(255, 255, 255, 0.95);
   border: none;
@@ -201,9 +220,6 @@ body {
   transition: opacity 0.8s ease 0.5s, transform 0.8s ease 0.5s;
 }
 
-
-
-
 /* =================================== */
 #videoSection {
   background: #f0f8ff;
@@ -251,12 +267,10 @@ body {
 }
 
 
-
 @keyframes danmuMove {
   from { transform: translateX(100vw); }
   to { transform: translateX(-100%); }
 }
-
 
 
 /* 最终消息样式 */
