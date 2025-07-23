@@ -229,9 +229,12 @@ document.addEventListener("DOMContentLoaded", () => {
         const video = document.getElementById("memoryVideo");
         const danmakuContainer = document.getElementById("danmakuContainer");
         const danmakus = [
-            "太美了！", "满满的回忆！", "还想去！", "友谊万岁✨",
-            "时光不老，我们不散", "青春永驻", "最美好的时光",
-            "永远珍藏这一刻", "笑的真开心", "下次再聚"
+            // 原有弹幕
+            "太美了!", "满满的回忆！", "还想去！", "友谊万岁✨",
+            "时光不老，我们不散", "青春永驻", "珍藏这一刻", 
+            "下次再聚", "青春不散场", "最棒的旅行", "岁月静好",
+            "神仙颜值", "笑得好甜","青春万岁", "永不褪色", "纯真笑容", "时光印记",
+
         ];
         const colors = ["#ff6b9d", "#ff9dcf", "#80ccff", "#ffd166", "#06d6a0"];
 
