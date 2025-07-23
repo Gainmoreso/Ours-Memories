@@ -9,6 +9,11 @@ document.addEventListener("DOMContentLoaded", () => {
         final: document.getElementById("finalMessage")
     };
 
+    sections.intro.style.display = "flex";
+    sections.photo.style.display = "none";
+    sections.video.style.display = "none";
+    sections.final.style.display = "none";
+
     initIntro();
     initSlideshow();
     initVideoDanmaku();
@@ -16,13 +21,24 @@ document.addEventListener("DOMContentLoaded", () => {
     // ========== 开场动画 ==========
     function initIntro() {
         const startButton = document.getElementById("startButton");
+        const titleLines = document.querySelectorAll('.title-line');
+        
+        // 触发标题动画
+        titleLines.forEach(line => {
+            line.style.opacity = 1;
+            line.style.transform = 'translateY(0)';
+        });
+        
+        // 触发按钮动画
+        startButton.style.opacity = 1;
+        startButton.style.transform = 'translateY(0)';
+        
+        // 添加点击事件
         startButton.addEventListener("click", () => {
             sections.intro.style.display = "none";
-
             requestAnimationFrame(() => {
                 showSection(sections.photo);
             });
-
             bgMusic.play().catch(err => console.log("音乐播放失败:", err));
         });
     }
