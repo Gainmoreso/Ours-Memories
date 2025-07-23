@@ -92,12 +92,9 @@ body {
   box-shadow: 0 12px 25px rgba(255, 107, 157, 0.6);
 }
 
-.intro-button i {
-  color: #ff6b9d;
-  font-size: 1.4rem;
-}
 
-.section {
+/* ========== 独立的照片区域样式 ========== */
+#photoSection {
   position: absolute;
   top: 0;
   left: 0;
@@ -114,11 +111,12 @@ body {
   background: linear-gradient(to bottom, #ffeff8, #e0f3ff);
 }
 
-.section.active {
+#photoSection.active {
   opacity: 1;
   visibility: visible;
 }
 
+/* 幻灯片图片容器 */
 .photo-container {
   width: 100%;
   max-width: 400px;
@@ -130,61 +128,83 @@ body {
   justify-content: center;
 }
 
+/* 图片本身 */
 #slideshowImage {
-  max-height: 100%; /* 确保图片不超出容器 */
-  width: auto; /* 保持宽高比 */
-  object-fit: contain; /* 完整显示图片 */
-  opacity: 1 !important; /* 覆盖JS设置的初始透明度 */
-  transform: scale(1) !important; /* 覆盖JS设置的初始缩放 */
-  transition: all 0.8s ease !important; /* 确保过渡效果 */
+  max-height: 100%;
+  width: auto;
+  object-fit: contain;
+  opacity: 0;
+  transform: scale(0.95);
+  transition: none;
 }
 
-/* 添加图片加载完成后的可见状态 */
-#slideshowImage.loaded {
+#slideshowImage.visible-photo {
   opacity: 1;
   transform: scale(1);
+  transition: opacity 0.8s ease, transform 0.8s ease;
 }
 
-/* 修复导航按钮位置 */
+/* 导航按钮控制区域 */
 .nav-controls {
   position: relative;
   bottom: auto;
   margin-top: 20px;
 }
 
-/* 确保幻灯片容器可见 */
-.photo-container:not(.fade-in-out) {
-  opacity: 1 !important;
+/* 导航按钮 */
+.nav-btn {
+  background: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  margin: 0 10px;
+  font-size: 1.4rem;
+  color: #ff6b9d;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
+.nav-btn:hover {
+  background-color: #ffeff5;
+  transform: scale(1.1);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+}
 
-#slideshowImage.visible {
+.nav-btn i {
+  pointer-events: none;
+}
+
+.fade-transition {
+  transition: opacity 0.8s cubic-bezier(0.23, 1, 0.32, 1);
   opacity: 1;
 }
 
-#captionText {
-  margin-top: 20px;
-  font-size: 1.4rem;
-  text-align: center;
-  color: #5a5a5a;
-  padding: 8px 25px;
-  font-weight: 600;
-
-  /* 确保单行显示 */
-  white-space: nowrap;
-
-  /* 美化效果 */
-  font-family: 'Ma Shan Zheng', cursive;
-  background: rgba(255, 255, 255, 0.85); /* 半透明白色背景 */
-  border-radius: 30px; /* 圆角边框 */
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15); /* 柔和阴影 */
-  display: inline-block; /* 使背景仅包裹文字 */
-  backdrop-filter: blur(4px); /* 毛玻璃效果 */
-  /* 文字装饰 */
-  text-shadow: 1px 1px 2px rgba(0,0,0,0.1); /* 轻微文字阴影 */
-  letter-spacing: 0.5px; /* 字间距 */
+.fade-out {
+  opacity: 0 !important;
 }
 
+
+
+/* 图片说明文字 */
+#captionText {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: none;
+}
+
+/* 图片说明文字：可见状态（动画） */
+#captionText.visible-caption {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.8s ease 0.5s, transform 0.8s ease 0.5s;
+}
+
+
+
+
+/* =================================== */
 #videoSection {
   background: #f0f8ff;
 }
@@ -231,85 +251,6 @@ body {
 }
 
 
-/* 开场动画增强效果 */
-#introScreen {
-  /* 保持原有渐变背景 */
-  background: linear-gradient(135deg, #ff9dcf, #ffcce0, #b3e0ff, #80ccff);
-  background-size: 400% 400%;
-  animation: gradientBG 15s ease infinite;
-
-  /* 新增效果 */
-  overflow: hidden;
-  position: relative;
-}
-
-
-/* 增强标题动画 */
-.intro-title {
-  perspective: 1000px;
-}
-
-.title-line {
-  transform: translateY(30px) rotateX(90deg);
-  opacity: 0;
-  animation: titleAppear 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-  transform-origin: bottom;
-}
-
-@keyframes titleAppear {
-  to {
-    opacity: 1;
-    transform: translateY(0) rotateX(0);
-  }
-}
-
-/* 增强按钮效果 */
-.intro-button {
-  position: relative;
-  overflow: hidden;
-  z-index: 1;
-}
-
-.intro-button::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(45deg, #ff9dcf, #ff6b9d, #b3e0ff, #80ccff);
-  background-size: 400% 400%;
-  z-index: -1;
-  opacity: 0;
-  transition: opacity 0.5s ease;
-  animation: gradientBG 8s ease infinite;
-}
-
-.intro-button:hover::before {
-  opacity: 1;
-}
-
-.intro-button:hover {
-  color: white;
-  transform: translateY(-5px) scale(1.05);
-  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.3);
-}
-
-
-
-
-@keyframes gradientBG {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-@keyframes fadeUp {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
 
 @keyframes danmuMove {
   from { transform: translateX(100vw); }
