@@ -256,18 +256,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
     async function showPoemLines() {
         const lines = document.querySelectorAll(".poem-line");
+        const poemStage = document.getElementById("poemStage");
         const poemContainer = document.querySelector(".poem-container");
-        poemContainer.innerHTML = "";
+
+        // 隐藏原始容器，防止样式干扰
+        poemContainer.style.display = "none";
 
         const segments = [
             [0, 3], [3, 7], [7, 11], [11, 15], [15, 19], [19, 22], [22, 25]
         ];
 
         for (const [start, end] of segments) {
+            // 创建新的段落容器
             const segmentDiv = document.createElement("div");
             segmentDiv.className = "poem-segment";
             if (end === 25) segmentDiv.classList.add("final-segment");
 
+            // 添加对应诗句
             for (let i = start; i < end; i++) {
                 if (lines[i]) {
                     const lineClone = lines[i].cloneNode(true);
@@ -275,21 +280,26 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             }
 
-            poemContainer.appendChild(segmentDiv);
-        }
+            // 添加到舞台中并激活动画
+            poemStage.appendChild(segmentDiv);
+            await delay(100); // 确保 DOM 渲染完成
+            segmentDiv.classList.add("active");
 
-        for (const segment of poemContainer.children) {
-            segment.classList.add("active");
-            const lineEls = segment.querySelectorAll(".poem-line");
+            // 一句一句进入动画
+            const lineEls = segmentDiv.querySelectorAll(".poem-line");
             await showLinesWithDelay(lineEls, 800);
 
-            if (!segment.classList.contains("final-segment")) {
-                await delay(2000);
-                segment.classList.remove("active");
-                await delay(1200);
+            // 非最后一段需要淡出并删除
+            if (!segmentDiv.classList.contains("final-segment")) {
+                await delay(2000); // 等待观赏
+                segmentDiv.classList.remove("active");
+                segmentDiv.classList.add("fade-out");
+                await delay(1000);
+                poemStage.removeChild(segmentDiv);
             }
         }
     }
+
 
     function showLinesWithDelay(lines, delayTime) {
         return new Promise(resolve => {
