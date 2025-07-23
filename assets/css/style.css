@@ -130,11 +130,31 @@ body {
   justify-content: center;
 }
 
-
 #slideshowImage {
-  border: 5px solid white;
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
-  transition: opacity 0.8s ease, transform 0.8s ease;
+  max-height: 100%; /* 确保图片不超出容器 */
+  width: auto; /* 保持宽高比 */
+  object-fit: contain; /* 完整显示图片 */
+  opacity: 1 !important; /* 覆盖JS设置的初始透明度 */
+  transform: scale(1) !important; /* 覆盖JS设置的初始缩放 */
+  transition: all 0.8s ease !important; /* 确保过渡效果 */
+}
+
+/* 添加图片加载完成后的可见状态 */
+#slideshowImage.loaded {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* 修复导航按钮位置 */
+.nav-controls {
+  position: relative;
+  bottom: auto;
+  margin-top: 20px;
+}
+
+/* 确保幻灯片容器可见 */
+.photo-container:not(.fade-in-out) {
+  opacity: 1 !important;
 }
 
 
