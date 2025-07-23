@@ -259,61 +259,61 @@ body {
 
 
 
-
-
-
-
-
-/* 照片效果 */
-.fade-transition {
-  transition: opacity 0.8s cubic-bezier(0.23, 1, 0.32, 1);
-}
-
-.fade-out {
-  opacity: 0 !important;
-}
-
-.fade-in {
-  opacity: 1 !important;
-}
-
-
 /* 最终消息样式 */
-#finalMessage {
-  background: linear-gradient(to bottom, #2c3e50, #1a1a2e);
-  color: #fff;
-  font-family: 'Ma Shan Zheng', cursive;
+/* === 新增舞台容器样式 === */
+#poemStage {
+  position: relative;
+  width: 100%;
+  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 10;
+  padding: 40px;
+  box-sizing: border-box;
 }
 
-/* 诗歌分段样式 */
+/* === 居中展示的每段诗歌样式增强 === */
 .poem-segment {
+  position: absolute;
+  max-width: 820px;
+  text-align: center;
+  padding: 40px 60px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 24px;
+  box-shadow: 0 0 40px rgba(255, 255, 255, 0.08);
   opacity: 0;
-  transform: translateY(30px);
-  transition: all 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  margin-bottom: 50px;
+  transform: scale(0.95);
+  transition: all 1s ease;
 }
 
+/* === 展示激活状态 === */
 .poem-segment.active {
   opacity: 1;
-  transform: translateY(0);
+  transform: scale(1);
 }
 
-/* 最后一段特殊效果 */
+/* === 淡出动画样式 === */
+.poem-segment.fade-out {
+  opacity: 0;
+  transform: scale(0.95);
+  transition: all 0.8s ease;
+}
+
+/* 保留你的最终段落特殊效果（未变） */
 .poem-segment.final-segment .poem-line {
-  position: relative;
-  z-index: 1;
+  font-size: 2.4rem;
+  color: #ffd166;
+  text-shadow: 0 0 15px rgba(255, 209, 102, 0.7);
+  animation: glow 3s infinite alternate;
 }
 
 .poem-segment.final-segment .poem-line::after {
   content: "";
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  top: 0; left: 0; right: 0; bottom: 0;
   background: radial-gradient(circle at center, rgba(255,255,255,0.2) 0%, transparent 70%);
   z-index: -1;
   opacity: 0;
@@ -324,23 +324,7 @@ body {
   opacity: 0.5;
 }
 
-.poem-segment.final-segment .poem-line {
-  font-size: 2.4rem;
-  color: #ffd166;
-  text-shadow: 0 0 15px rgba(255, 209, 102, 0.7);
-  animation: glow 3s infinite alternate;
-}
-
-@keyframes glow {
-  0% {
-    text-shadow: 0 0 5px rgba(255, 209, 102, 0.7);
-  }
-  100% {
-    text-shadow: 0 0 20px rgba(255, 209, 102, 0.9), 0 0 30px rgba(255, 157, 207, 0.7);
-  }
-}
-
-/* 诗歌行动画 */
+/* === 保留原有行进入动画 === */
 .poem-line {
   opacity: 0;
   transform: translateY(20px);
@@ -353,6 +337,15 @@ body {
   opacity: 1;
   transform: translateY(0);
   filter: blur(0);
+}
+
+@keyframes glow {
+  0% {
+    text-shadow: 0 0 5px rgba(255, 209, 102, 0.7);
+  }
+  100% {
+    text-shadow: 0 0 20px rgba(255, 209, 102, 0.9), 0 0 30px rgba(255, 157, 207, 0.7);
+  }
 }
 
 
