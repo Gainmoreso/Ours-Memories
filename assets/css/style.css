@@ -130,15 +130,13 @@ body {
   justify-content: center;
 }
 
+
 #slideshowImage {
-  width: 100%;
-  height: 85%;
-  object-fit: contain;
-  border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-  transition: opacity 0.8s ease;
-  opacity: 0;
+  border: 5px solid white;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+  transition: opacity 0.8s ease, transform 0.8s ease;
 }
+
 
 #slideshowImage.visible {
   opacity: 1;
@@ -148,9 +146,9 @@ body {
   margin-top: 20px;
   font-size: 1.4rem;
   text-align: center;
-  color: #5a5a5a; /* 更优雅的紫色调 */
-  padding: 8px 25px; /* 增加内边距 */
-  font-weight: 600; /* 加粗字体 */
+  color: #5a5a5a;
+  padding: 8px 25px;
+  font-weight: 600;
 
   /* 确保单行显示 */
   white-space: nowrap;
@@ -305,7 +303,6 @@ body {
 
 
 
-
 /* 照片效果 */
 .fade-transition {
   transition: opacity 0.8s cubic-bezier(0.23, 1, 0.32, 1);
@@ -398,22 +395,3 @@ body {
 }
 
 
-
-/* 照片增强效果 */
-#slideshowImage {
-  border: 5px solid white;
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
-  transition: opacity 0.8s ease, transform 0.8s ease;
-}
-
-/* 增强标题效果 */
-#captionText {
-  font-size: 1.6rem;
-  color: #5a5a5a;
-  padding: 15px 25px;
-  background: rgba(255, 255, 255, 0.8);
-  border-radius: 15px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-  transition: all 0.8s ease;
-  max-width: 90%;
-}
