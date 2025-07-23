@@ -1,4 +1,4 @@
-/* style.css：主样式文件 */
+/* ~/asset/css/style.css：主样式文件 */
 @import url('https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Sans+SC:wght@400;500;700&display=swap');
 
 * {
@@ -148,41 +148,23 @@ body {
   margin-top: 20px;
   font-size: 1.4rem;
   text-align: center;
-  color: #5a5a5a;
-  padding: 0 15px;
-  font-weight: 500;
-  line-height: 1.5;
-  max-height: 15%;
-  overflow: auto;
+  color: #5a5a5a; /* 更优雅的紫色调 */
+  padding: 8px 25px; /* 增加内边距 */
+  font-weight: 600; /* 加粗字体 */
+
+  /* 确保单行显示 */
+  white-space: nowrap;
+
+  /* 美化效果 */
   font-family: 'Ma Shan Zheng', cursive;
-}
-
-.nav-controls {
-  position: absolute;
-  bottom: 30px;
-  display: flex;
-  gap: 30px;
-}
-
-.nav-btn {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.9);
-  border: 2px solid #ff9dcf;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 1.8rem;
-  color: #ff6b9d;
-  cursor: pointer;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-  transition: all 0.3s ease;
-}
-
-.nav-btn:active {
-  transform: scale(0.95);
-  background: white;
+  background: rgba(255, 255, 255, 0.85); /* 半透明白色背景 */
+  border-radius: 30px; /* 圆角边框 */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15); /* 柔和阴影 */
+  display: inline-block; /* 使背景仅包裹文字 */
+  backdrop-filter: blur(4px); /* 毛玻璃效果 */
+  /* 文字装饰 */
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.1); /* 轻微文字阴影 */
+  letter-spacing: 0.5px; /* 字间距 */
 }
 
 #videoSection {
@@ -237,7 +219,7 @@ body {
   background: linear-gradient(135deg, #ff9dcf, #ffcce0, #b3e0ff, #80ccff);
   background-size: 400% 400%;
   animation: gradientBG 15s ease infinite;
-  
+
   /* 新增效果 */
   overflow: hidden;
   position: relative;
@@ -337,6 +319,7 @@ body {
   opacity: 1 !important;
 }
 
+
 /* 最终消息样式 */
 #finalMessage {
   background: linear-gradient(to bottom, #2c3e50, #1a1a2e);
@@ -347,20 +330,65 @@ body {
   align-items: center;
 }
 
-.poem-container {
-  max-width: 600px;
-  text-align: center;
-  padding: 30px;
-}
-
-.poem-line {
-  font-size: 2.2rem;
-  line-height: 1.6;
-  margin: 15px 0;
+/* 诗歌分段样式 */
+.poem-segment {
   opacity: 0;
   transform: translateY(30px);
-  filter: blur(5px);
   transition: all 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  margin-bottom: 50px;
+}
+
+.poem-segment.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* 最后一段特殊效果 */
+.poem-segment.final-segment .poem-line {
+  position: relative;
+  z-index: 1;
+}
+
+.poem-segment.final-segment .poem-line::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at center, rgba(255,255,255,0.2) 0%, transparent 70%);
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 1s ease;
+}
+
+.poem-segment.final-segment.active .poem-line::after {
+  opacity: 0.5;
+}
+
+.poem-segment.final-segment .poem-line {
+  font-size: 2.4rem;
+  color: #ffd166;
+  text-shadow: 0 0 15px rgba(255, 209, 102, 0.7);
+  animation: glow 3s infinite alternate;
+}
+
+@keyframes glow {
+  0% {
+    text-shadow: 0 0 5px rgba(255, 209, 102, 0.7);
+  }
+  100% {
+    text-shadow: 0 0 20px rgba(255, 209, 102, 0.9), 0 0 30px rgba(255, 157, 207, 0.7);
+  }
+}
+
+/* 诗歌行动画 */
+.poem-line {
+  opacity: 0;
+  transform: translateY(20px);
+  filter: blur(3px);
+  transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  margin: 15px 0;
 }
 
 .poem-line.visible {
@@ -369,25 +397,7 @@ body {
   filter: blur(0);
 }
 
-/* 添加装饰元素 */
-.poem-container::before,
-.poem-container::after {
-  content: "❦";
-  position: absolute;
-  font-size: 3rem;
-  color: rgba(255, 255, 255, 0.1);
-}
 
-.poem-container::before {
-  top: 20px;
-  left: 20px;
-}
-
-.poem-container::after {
-  bottom: 20px;
-  right: 20px;
-  transform: rotate(180deg);
-}
 
 /* 照片增强效果 */
 #slideshowImage {
