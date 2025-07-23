@@ -44,7 +44,7 @@ body {
 .intro-title {
   font-family: 'Ma Shan Zheng', cursive;
   color: white;
-  text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   margin-bottom: 40px;
 }
 
@@ -53,7 +53,6 @@ body {
   line-height: 1.3;
   opacity: 0;
   transform: translateY(30px);
-  animation: fadeUp 1.2s forwards;
 }
 
 .title-line:first-child {
@@ -75,9 +74,11 @@ body {
   0% {
     background-position: 0% 50%;
   }
+
   50% {
     background-position: 100% 50%;
   }
+
   100% {
     background-position: 0% 50%;
   }
@@ -100,7 +101,6 @@ body {
   gap: 12px;
   opacity: 0;
   transform: translateY(30px);
-  animation: fadeUp 0.8s forwards 1.8s;
   margin: 0 auto;
   width: 80%;
   max-width: 280px;
@@ -145,6 +145,7 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  transition: opacity 0.8s ease;
 }
 
 /* 图片本身 */
@@ -180,7 +181,7 @@ body {
   margin: 0 10px;
   font-size: 1.4rem;
   color: #ff6b9d;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   cursor: pointer;
   transition: all 0.3s ease;
 }
@@ -188,7 +189,7 @@ body {
 .nav-btn:hover {
   background-color: #ffeff5;
   transform: scale(1.1);
-  box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
 }
 
 .nav-btn i {
@@ -208,9 +209,20 @@ body {
 
 /* 图片说明文字 */
 #captionText {
+  bottom: 15%;
   opacity: 0;
-  transform: translateY(20px);
-  transition: none;
+  max-width: 80%;
+  display: flex;
+  align-items: center;
+
+
+  /* 文字样式 */
+  font-family: 'Ma Shan Zheng', cursive;
+  font-size: 1.5rem;
+  color: #635f65;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+
 }
 
 /* 图片说明文字：可见状态（动画） */
@@ -219,6 +231,9 @@ body {
   transform: translateY(0);
   transition: opacity 0.8s ease 0.5s, transform 0.8s ease 0.5s;
 }
+
+
+
 
 /* =================================== */
 #videoSection {
@@ -239,7 +254,7 @@ body {
   width: 100%;
   max-height: 60vh;
   border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
 }
 
 #danmakuContainer {
@@ -257,19 +272,24 @@ body {
   white-space: nowrap;
   font-size: 1.5rem;
   color: white;
-  text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
   animation: danmuMove 8s linear forwards;
   font-family: 'Ma Shan Zheng', cursive;
   padding: 5px 15px;
-  background: rgba(0,0,0,0.3);
+  background: rgba(0, 0, 0, 0.3);
   border-radius: 20px;
   z-index: 10;
 }
 
 
 @keyframes danmuMove {
-  from { transform: translateX(100vw); }
-  to { transform: translateX(-100%); }
+  from {
+    transform: translateX(100vw);
+  }
+
+  to {
+    transform: translateX(-100%);
+  }
 }
 
 
@@ -279,7 +299,7 @@ body {
   position: relative;
   width: 100%;
   height: 100vh;
-  display: flex;
+  display: none;
   justify-content: center;
   align-items: center;
   z-index: 10;
@@ -300,21 +320,28 @@ body {
   box-shadow: 0 0 40px rgba(255, 255, 255, 0.08);
   opacity: 0;
   transform: scale(0.95);
-  transition: all 1s ease;
 }
 
-/* === 展示激活状态 === */
+@keyframes segmentAppear {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 .poem-segment.active {
-  opacity: 1;
-  transform: scale(1);
+  animation: segmentAppear 1s ease forwards;
 }
 
-/* === 淡出动画样式 === */
 .poem-segment.fade-out {
-  opacity: 0;
-  transform: scale(0.95);
-  transition: all 0.8s ease;
+  animation: segmentAppear 0.8s ease reverse forwards;
 }
+
 
 /* 保留你的最终段落特殊效果（未变） */
 .poem-segment.final-segment .poem-line {
@@ -327,8 +354,11 @@ body {
 .poem-segment.final-segment .poem-line::after {
   content: "";
   position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: radial-gradient(circle at center, rgba(255,255,255,0.2) 0%, transparent 70%);
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.2) 0%, transparent 70%);
   z-index: -1;
   opacity: 0;
   transition: opacity 1s ease;
@@ -340,11 +370,27 @@ body {
 
 /* === 保留原有行进入动画 === */
 .poem-line {
+  font-size: 1.8rem;
+  color: #e0e0ff;
+  font-family: 'Ma Shan Zheng', cursive;
+  position: relative;
+  z-index: 2;
+  line-height: 1.6;
   opacity: 0;
   transform: translateY(20px);
   filter: blur(3px);
-  transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transition: all 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   margin: 15px 0;
+}
+
+.poem-segment:not(.final-segment) .poem-line {
+  font-size: 2rem;
+  color: #f0f0ff;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.poem-segment.active:not(.final-segment) .poem-line.visible {
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.7);
 }
 
 .poem-line.visible {
@@ -357,9 +403,36 @@ body {
   0% {
     text-shadow: 0 0 5px rgba(255, 209, 102, 0.7);
   }
+
   100% {
     text-shadow: 0 0 20px rgba(255, 209, 102, 0.9), 0 0 30px rgba(255, 157, 207, 0.7);
   }
 }
 
 
+#finalMessage {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  background-image: url('https://images.unsplash.com/photo-1519681393784-d120267933ba?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1920&q=80');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: 1;
+}
+
+/* 添加半透明遮罩增强文字可读性 */
+#finalMessage::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(10, 3, 30, 0.85) 0%, rgba(13, 27, 42, 0.9) 100%);
+  z-index: 2;
+}
