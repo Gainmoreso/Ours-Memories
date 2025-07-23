@@ -21,7 +21,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const startButton = document.getElementById("startButton");
     startButton.addEventListener("click", () => {
       sections.intro.style.display = "none";
-      showSection(sections.photo);
+
+      requestAnimationFrame(() => {showSection(sections.photo);});
+
       bgMusic.play().catch(err => console.log("音乐播放失败:", err));
     });
   }
@@ -42,131 +44,129 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // ========== 幻灯片播放 ==========
-  // 省略其他模块...
+  function initSlideshow() {
+      // === 保留原始 photos 数组定义 ===
+      const photos = [
+        { src: "assets/images/photo1.jpg", caption: "千年胭脂色 犹带盛唐春" },
+        { src: "assets/images/photo3.jpg", caption: "鞍鞯金斑，曾驮驼铃过阳关" },
+        { src: "assets/images/photo5.jpg", caption: "千载风霜蚀不去袖中云纹" },
+        { src: "assets/images/photo7.jpg", caption: "则天之目 龙门之魄" },
+        { src: "assets/images/photo9.jpg", caption: "卢舍那千尺目光下" },
+        { src: "assets/images/photo11.jpg", caption: "朝圣者化身为流动的星点" },
+        { src: "assets/images/photo13.jpg", caption: "龙门石窟客服专线接通中..." },
+        { src: "assets/images/photo15.jpg", caption: "可爱捏~" },
+        { src: "assets/images/photo17.jpg", caption: "风起洛阳城，尘落白马寺" },
+        { src: "assets/images/photo19.jpg", caption: "待寺扶正缘" },
+        { src: "assets/images/photo21.jpg", caption: "泰式佛殿苑" },
+        { src: "assets/images/photo23.jpg", caption: "印度佛殿苑" },
+        { src: "assets/images/photo25.jpg", caption: "万岁通天应天门" },
+        { src: "assets/images/photo27.jpg", caption: "扶摇直上九万里" },
+        { src: "assets/images/photo29.jpg", caption: "白云千载空悠悠" },
+        { src: "assets/images/photo31.jpg", caption: "松拂云开万古心" },
+        { src: "assets/images/photo33.jpg", caption: "奇峰云海悬金殿" },
+        { src: "assets/images/photo35.jpg", caption: "" },
+        { src: "assets/images/photo37.jpg", caption: "天门之道仙气韵" },
+        { src: "assets/images/photo38.jpg", caption: "" },
+        { src: "assets/images/photo39.jpg", caption: "哈基旺 今年旺！" },
+        { src: "assets/images/photo41.jpg", caption: "" },
+        { src: "assets/images/photo43.jpg", caption: "" },
+        { src: "assets/images/photo45.jpg", caption: "" },
+        { src: "assets/images/photo47.jpg", caption: "" },
+        { src: "assets/images/photo49.jpg", caption: "石为地魄，云为天工" },
+        { src: "assets/images/photo53.jpg", caption: "不知天上宫阙" },
+        { src: "assets/images/photo55.jpg", caption: "今夕是何年" },
+        { src: "assets/images/photo57.jpg", caption: "天下四风谷之一" },
+        { src: "assets/images/photo58.jpg", caption: "" },
+        { src: "assets/images/photo59.jpg", caption: "" },
+        { src: "assets/images/photo60.jpg", caption: "仙侠奇境，灯星浮世" },
+        { src: "assets/images/photo61.jpg", caption: "神舟破浪起风帆" },
+        { src: "assets/images/photo63.jpg", caption: "霓虹光影水波漾" },
+        { src: "assets/images/photo65.jpg", caption: "" },
+        { src: "assets/images/photo67.jpg", caption: "" },
+        { src: "assets/images/photo69.jpg", caption: "飞檐朱灯缀天色" },
+        { src: "assets/images/photo71.jpg", caption: "双塔接星轨 暖金蚀夜幕" }
+      ];
 
-function initSlideshow() {
-  // === 保留原始 photos 数组定义 ===
-  const photos = [
-    { src: "assets/images/photo1.jpg", caption: "千年胭脂色 犹带盛唐春" },
-    { src: "assets/images/photo3.jpg", caption: "鞍鞯金斑，曾驮驼铃过阳关" },
-    { src: "assets/images/photo5.jpg", caption: "千载风霜蚀不去袖中云纹" },
-    { src: "assets/images/photo7.jpg", caption: "则天之目 龙门之魄" },
-    { src: "assets/images/photo9.jpg", caption: "卢舍那千尺目光下" },
-    { src: "assets/images/photo11.jpg", caption: "朝圣者化身为流动的星点" },
-    { src: "assets/images/photo13.jpg", caption: "龙门石窟客服专线接通中..." },
-    { src: "assets/images/photo15.jpg", caption: "可爱捏~" },
-    { src: "assets/images/photo17.jpg", caption: "风起洛阳城，尘落白马寺" },
-    { src: "assets/images/photo19.jpg", caption: "待寺扶正缘" },
-    { src: "assets/images/photo21.jpg", caption: "泰式佛殿苑" },
-    { src: "assets/images/photo23.jpg", caption: "印度佛殿苑" },
-    { src: "assets/images/photo25.jpg", caption: "万岁通天应天门" },
-    { src: "assets/images/photo27.jpg", caption: "扶摇直上九万里" },
-    { src: "assets/images/photo29.jpg", caption: "白云千载空悠悠" },
-    { src: "assets/images/photo31.jpg", caption: "松拂云开万古心" },
-    { src: "assets/images/photo33.jpg", caption: "奇峰云海悬金殿" },
-    { src: "assets/images/photo35.jpg", caption: "" },
-    { src: "assets/images/photo37.jpg", caption: "天门之道仙气韵" },
-    { src: "assets/images/photo38.jpg", caption: "" },
-    { src: "assets/images/photo39.jpg", caption: "哈基旺 今年旺！" },
-    { src: "assets/images/photo41.jpg", caption: "" },
-    { src: "assets/images/photo43.jpg", caption: "" },
-    { src: "assets/images/photo45.jpg", caption: "" },
-    { src: "assets/images/photo47.jpg", caption: "" },
-    { src: "assets/images/photo49.jpg", caption: "石为地魄，云为天工" },
-    { src: "assets/images/photo53.jpg", caption: "不知天上宫阙" },
-    { src: "assets/images/photo55.jpg", caption: "今夕是何年" },
-    { src: "assets/images/photo57.jpg", caption: "天下四风谷之一" },
-    { src: "assets/images/photo58.jpg", caption: "" },
-    { src: "assets/images/photo59.jpg", caption: "" },
-    { src: "assets/images/photo60.jpg", caption: "仙侠奇境，灯星浮世" },
-    { src: "assets/images/photo61.jpg", caption: "神舟破浪起风帆" },
-    { src: "assets/images/photo63.jpg", caption: "霓虹光影水波漾" },
-    { src: "assets/images/photo65.jpg", caption: "" },
-    { src: "assets/images/photo67.jpg", caption: "" },
-    { src: "assets/images/photo69.jpg", caption: "飞檐朱灯缀天色" },
-    { src: "assets/images/photo71.jpg", caption: "双塔接星轨 暖金蚀夜幕" }
-  ];
+      let current = 0;
+      let interval;
+      const slideshowImage = document.getElementById("slideshowImage");
+      const captionText = document.getElementById("captionText");
+      const container = document.querySelector(".photo-container");
 
-  let current = 0;
-  let interval;
-  const slideshowImage = document.getElementById("slideshowImage");
-  const captionText = document.getElementById("captionText");
-  const container = document.querySelector(".photo-container");
+      function updateSlideshow() {
+        const photo = photos[current];
+        captionText.style.opacity = 0;
+        captionText.style.transform = "translateY(20px)";
+        captionText.style.transition = "none";
 
-  function updateSlideshow() {
-    const photo = photos[current];
-    captionText.style.opacity = 0;
-    captionText.style.transform = "translateY(20px)";
-    captionText.style.transition = "none";
+        slideshowImage.style.opacity = 0;
+        slideshowImage.style.transform = "scale(0.95)";
+        slideshowImage.style.transition = "opacity 0.8s ease, transform 0.8s ease";
 
-    slideshowImage.style.opacity = 0;
-    slideshowImage.style.transform = "scale(0.95)";
-    slideshowImage.style.transition = "opacity 0.8s ease, transform 0.8s ease";
-
-    setTimeout(() => {
-      slideshowImage.src = photo.src;
-      captionText.textContent = photo.caption;
-
-      captionText.style.transition = "opacity 0.8s ease 0.5s, transform 0.8s ease 0.5s";
-
-      slideshowImage.onload = () => {
-        slideshowImage.style.opacity = 1;
-        slideshowImage.style.transform = "scale(1)";
-        slideshowImage.addEventListener("transitionend", () => {
-          captionText.style.opacity = 1;
-          captionText.style.transform = "translateY(0)";
-        }, { once: true });
-      };
-    }, 300);
-  }
-
-  function nextPhoto() {
-    container.classList.add("fade-in-out");
-    setTimeout(() => {
-      current = (current + 1) % photos.length;
-      updateSlideshow();
-      container.classList.remove("fade-in-out");
-
-      if (current === photos.length - 1) {
-        clearInterval(interval);
         setTimeout(() => {
-          document.getElementById("memoryVideo").load();
-          showSection(sections.video);
-        }, 3000);
+          slideshowImage.src = photo.src;
+          captionText.textContent = photo.caption;
+
+          captionText.style.transition = "opacity 0.8s ease 0.5s, transform 0.8s ease 0.5s";
+
+          slideshowImage.onload = () => {
+            slideshowImage.style.opacity = 1;
+            slideshowImage.style.transform = "scale(1)";
+            slideshowImage.addEventListener("transitionend", () => {
+              captionText.style.opacity = 1;
+              captionText.style.transform = "translateY(0)";
+            }, { once: true });
+          };
+        }, 300);
       }
-    }, 500);
-  }
 
-  function prevPhoto() {
-    container.classList.add("fade-in-out");
-    setTimeout(() => {
-      current = (current - 1 + photos.length) % photos.length;
+      function nextPhoto() {
+        container.classList.add("fade-in-out");
+        setTimeout(() => {
+          current = (current + 1) % photos.length;
+          updateSlideshow();
+          container.classList.remove("fade-in-out");
+
+          if (current === photos.length - 1) {
+            clearInterval(interval);
+            setTimeout(() => {
+              document.getElementById("memoryVideo").load();
+              showSection(sections.video);
+            }, 3000);
+          }
+        }, 500);
+      }
+
+      function prevPhoto() {
+        container.classList.add("fade-in-out");
+        setTimeout(() => {
+          current = (current - 1 + photos.length) % photos.length;
+          updateSlideshow();
+          container.classList.remove("fade-in-out");
+          resetAutoPlay();
+        }, 500);
+      }
+
+      function startAutoPlay() {
+        clearInterval(interval);
+        interval = setInterval(nextPhoto, 1500);
+      }
+
+      function resetAutoPlay() {
+        clearInterval(interval);
+        startAutoPlay();
+      }
+
+      document.getElementById("nextPhoto").addEventListener("click", nextPhoto);
+      document.getElementById("prevPhoto").addEventListener("click", prevPhoto);
       updateSlideshow();
-      container.classList.remove("fade-in-out");
-      resetAutoPlay();
-    }, 500);
-  }
 
-  function startAutoPlay() {
-    clearInterval(interval);
-    interval = setInterval(nextPhoto, 1500);
-  }
-
-  function resetAutoPlay() {
-    clearInterval(interval);
-    startAutoPlay();
-  }
-
-  document.getElementById("nextPhoto").addEventListener("click", nextPhoto);
-  document.getElementById("prevPhoto").addEventListener("click", prevPhoto);
-  updateSlideshow();
-
-  sections.photo.addEventListener("transitionend", () => {
-    if (sections.photo.classList.contains("active")) {
-      startAutoPlay();
+      sections.photo.addEventListener("transitionend", () => {
+        if (sections.photo.classList.contains("active")) {
+          startAutoPlay();
+        }
+      });
     }
-  });
-}
 
 
 
