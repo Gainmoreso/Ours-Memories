@@ -271,16 +271,6 @@ function showPrevPhoto() {
     danmakus.forEach((text, i) => {
       setTimeout(() => createDanmaku(text), i * 1500);
     });
-    
-    // 持续添加弹幕
-    const interval = setInterval(() => {
-      if (!video.paused) {
-        const randomText = danmakus[Math.floor(Math.random() * danmakus.length)];
-        createDanmaku(randomText);
-      } else {
-        clearInterval(interval);
-      }
-    }, 2500);
   });
 
    video.addEventListener("ended", () => {
@@ -318,38 +308,5 @@ function showPrevPhoto() {
   
   // 定义photoContainer变量（之前缺少这个定义）
   const photoContainer = document.querySelector(".photo-container");
-  
-  // 添加粒子效果（开场动画美化）
-  function createParticles() {
-    const introScreen = document.getElementById("introScreen");
-    const particleCount = 50;
-    
-    for (let i = 0; i < particleCount; i++) {
-      const particle = document.createElement("div");
-      particle.classList.add("particle");
-      
-      // 随机大小和位置
-      const size = Math.random() * 15 + 5;
-      const posX = Math.random() * 100;
-      const delay = Math.random() * 15;
-      const duration = 10 + Math.random() * 20;
-      
-      particle.style.width = `${size}px`;
-      particle.style.height = `${size}px`;
-      particle.style.left = `${posX}%`;
-      particle.style.animationDelay = `${delay}s`;
-      particle.style.animationDuration = `${duration}s`;
-      
-      // 随机颜色
-      const colors = ["#ff9dcf", "#b3e0ff", "#ffd166", "#ffffff"];
-      particle.style.background = colors[Math.floor(Math.random() * colors.length)];
-      
-      introScreen.appendChild(particle);
-    }
-  }
-  
-  // 创建粒子效果
-  createParticles();
-  
   
 }); 
