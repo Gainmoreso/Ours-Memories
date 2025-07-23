@@ -14,6 +14,9 @@ document.addEventListener("DOMContentLoaded", () => {
     sections.video.style.display = "none";
     sections.final.style.display = "none";
 
+    let slideshowInterval = null;
+    let slideshowCurrent = 0;
+
     initIntro();
     initSlideshow();
     initVideoDanmaku();
@@ -22,44 +25,61 @@ document.addEventListener("DOMContentLoaded", () => {
     function initIntro() {
         const startButton = document.getElementById("startButton");
         const titleLines = document.querySelectorAll('.title-line');
-        
+
         // 触发标题动画
-        titleLines.forEach(line => {
-            line.style.opacity = 1;
-            line.style.transform = 'translateY(0)';
+        titleLines.forEach((line, index) => {
+            setTimeout(() => {
+                line.style.animation = `fadeUp 1.2s forwards`;
+            }, index * 500); // 每行延迟500ms
         });
-        
-        // 触发按钮动画
-        startButton.style.opacity = 1;
-        startButton.style.transform = 'translateY(0)';
-        
+
+        // 按钮动画延迟出现
+        setTimeout(() => {
+            startButton.style.animation = `fadeUp 0.8s forwards`;
+        }, 1500);
+
         // 添加点击事件
         startButton.addEventListener("click", () => {
             sections.intro.style.display = "none";
             requestAnimationFrame(() => {
                 showSection(sections.photo);
             });
-            bgMusic.play().catch(err => console.log("音乐播放失败:", err));
+            bgMusic.play();
         });
     }
 
     function showSection(target) {
-        Object.values(sections).forEach(sec => sec.classList.remove("active"));
+        Object.values(sections).forEach(sec => {
+            sec.classList.remove("active");
+            sec.style.display = "none"; // 确保隐藏非活动部分
+        });
+
+        target.style.display = "flex"; // 或您使用的布局方式
         target.classList.add("active");
         if (target === sections.photo) {
-            setTimeout(() => {
-                startAutoPlay();
-            }, 300);
+            slideshowCurrent = -1;
+            startAutoPlay();
         }
 
         if (target === sections.video) {
+            video = document.getElementById("memoryVideo");
+            video.currentTime = 0;
+            video.pause();
+
             target.style.opacity = 0;
             target.style.transition = "opacity 1.5s ease-in-out";
+
             setTimeout(() => {
                 target.style.opacity = 1;
-                const video = document.getElementById("memoryVideo");
                 video.play().catch(err => console.log("视频播放失败:", err));
             }, 100);
+        }
+
+        if (target === sections.final) {
+            // 准备诗歌舞台
+            const poemStage = document.getElementById("poemStage");
+            poemStage.style.display = "flex";
+            poemStage.innerHTML = "";
         }
     }
 
@@ -67,54 +87,52 @@ document.addEventListener("DOMContentLoaded", () => {
     function initSlideshow() {
         // === 保留原始 photos 数组定义 ===
         const photos = [
-            {src: "assets/images/photo1.jpg", caption: "千年胭脂色 犹带盛唐春"},
-            {src: "assets/images/photo3.jpg", caption: "鞍鞯金斑，曾驮驼铃过阳关"},
-            {src: "assets/images/photo5.jpg", caption: "千载风霜蚀不去袖中云纹"},
-            {src: "assets/images/photo7.jpg", caption: "则天之目 龙门之魄"},
-            {src: "assets/images/photo9.jpg", caption: "卢舍那千尺目光下"},
-            {src: "assets/images/photo11.jpg", caption: "朝圣者化身为流动的星点"},
-            {src: "assets/images/photo13.jpg", caption: "龙门石窟客服专线接通中..."},
-            {src: "assets/images/photo15.jpg", caption: "可爱捏~"},
-            {src: "assets/images/photo17.jpg", caption: "风起洛阳城，尘落白马寺"},
-            {src: "assets/images/photo19.jpg", caption: "待寺扶正缘"},
-            {src: "assets/images/photo21.jpg", caption: "泰式佛殿苑"},
-            {src: "assets/images/photo23.jpg", caption: "印度佛殿苑"},
-            {src: "assets/images/photo25.jpg", caption: "万岁通天应天门"},
-            {src: "assets/images/photo27.jpg", caption: "扶摇直上九万里"},
-            {src: "assets/images/photo29.jpg", caption: "白云千载空悠悠"},
-            {src: "assets/images/photo31.jpg", caption: "松拂云开万古心"},
-            {src: "assets/images/photo33.jpg", caption: "奇峰云海悬金殿"},
-            {src: "assets/images/photo35.jpg", caption: ""},
-            {src: "assets/images/photo37.jpg", caption: "天门之道仙气韵"},
-            {src: "assets/images/photo38.jpg", caption: ""},
-            {src: "assets/images/photo39.jpg", caption: "哈基旺 今年旺！"},
-            {src: "assets/images/photo41.jpg", caption: ""},
-            {src: "assets/images/photo43.jpg", caption: ""},
-            {src: "assets/images/photo45.jpg", caption: ""},
-            {src: "assets/images/photo47.jpg", caption: ""},
-            {src: "assets/images/photo49.jpg", caption: "石为地魄，云为天工"},
-            {src: "assets/images/photo53.jpg", caption: "不知天上宫阙"},
-            {src: "assets/images/photo55.jpg", caption: "今夕是何年"},
-            {src: "assets/images/photo57.jpg", caption: "天下四风谷之一"},
-            {src: "assets/images/photo58.jpg", caption: ""},
-            {src: "assets/images/photo59.jpg", caption: ""},
-            {src: "assets/images/photo60.jpg", caption: "仙侠奇境，灯星浮世"},
-            {src: "assets/images/photo61.jpg", caption: "神舟破浪起风帆"},
-            {src: "assets/images/photo63.jpg", caption: "霓虹光影水波漾"},
-            {src: "assets/images/photo65.jpg", caption: ""},
-            {src: "assets/images/photo67.jpg", caption: ""},
-            {src: "assets/images/photo69.jpg", caption: "飞檐朱灯缀天色"},
-            {src: "assets/images/photo71.jpg", caption: "双塔接星轨 暖金蚀夜幕"}
+            { src: "assets/images/photo1.jpg", caption: "千年胭脂色 犹带盛唐春" },
+            { src: "assets/images/photo3.jpg", caption: "鞍鞯金斑，曾驮驼铃过阳关" },
+            { src: "assets/images/photo5.jpg", caption: "千载风霜蚀不去袖中云纹" },
+            { src: "assets/images/photo7.jpg", caption: "则天之目 龙门之魄" },
+            { src: "assets/images/photo9.jpg", caption: "卢舍那千尺目光下" },
+            { src: "assets/images/photo11.jpg", caption: "朝圣者化身为流动的星点" },
+            { src: "assets/images/photo13.jpg", caption: "龙门石窟客服专线接通中..." },
+            { src: "assets/images/photo15.jpg", caption: "可爱捏~" },
+            { src: "assets/images/photo17.jpg", caption: "风起洛阳城，尘落白马寺" },
+            { src: "assets/images/photo19.jpg", caption: "待寺扶正缘" },
+            { src: "assets/images/photo21.jpg", caption: "泰式佛殿苑" },
+            { src: "assets/images/photo23.jpg", caption: "印度佛殿苑" },
+            { src: "assets/images/photo25.jpg", caption: "万岁通天应天门" },
+            { src: "assets/images/photo27.jpg", caption: "扶摇直上九万里" },
+            { src: "assets/images/photo29.jpg", caption: "白云千载空悠悠" },
+            { src: "assets/images/photo31.jpg", caption: "松拂云开万古心" },
+            { src: "assets/images/photo33.jpg", caption: "奇峰云海悬金殿" },
+            { src: "assets/images/photo35.jpg", caption: "" },
+            { src: "assets/images/photo37.jpg", caption: "天门之道仙气韵" },
+            { src: "assets/images/photo38.jpg", caption: "" },
+            { src: "assets/images/photo39.jpg", caption: "哈基旺 今年旺！" },
+            { src: "assets/images/photo41.jpg", caption: "" },
+            { src: "assets/images/photo43.jpg", caption: "" },
+            { src: "assets/images/photo45.jpg", caption: "" },
+            { src: "assets/images/photo47.jpg", caption: "" },
+            { src: "assets/images/photo49.jpg", caption: "石为地魄，云为天工" },
+            { src: "assets/images/photo53.jpg", caption: "不知天上宫阙" },
+            { src: "assets/images/photo55.jpg", caption: "今夕是何年" },
+            { src: "assets/images/photo57.jpg", caption: "天下四风谷之一" },
+            { src: "assets/images/photo58.jpg", caption: "" },
+            { src: "assets/images/photo59.jpg", caption: "" },
+            { src: "assets/images/photo60.jpg", caption: "仙侠奇境，灯星浮世" },
+            { src: "assets/images/photo61.jpg", caption: "神舟破浪起风帆" },
+            { src: "assets/images/photo63.jpg", caption: "霓虹光影水波漾" },
+            { src: "assets/images/photo65.jpg", caption: "" },
+            { src: "assets/images/photo67.jpg", caption: "" },
+            { src: "assets/images/photo69.jpg", caption: "飞檐朱灯缀天色" },
+            { src: "assets/images/photo71.jpg", caption: "双塔接星轨 暖金蚀夜幕" }
         ];
 
-        let current = 0;
-        let interval;
         const slideshowImage = document.getElementById("slideshowImage");
         const captionText = document.getElementById("captionText");
         const container = document.querySelector(".photo-container");
 
         function updateSlideshow() {
-            const photo = photos[current];
+            const photo = photos[slideshowCurrent];
 
             captionText.classList.remove("visible-caption");
             slideshowImage.classList.remove("visible-photo");
@@ -129,7 +147,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                     slideshowImage.addEventListener("transitionend", () => {
                         captionText.classList.add("visible-caption");
-                    }, {once: true});
+                    }, { once: true });
                 };
             }, 300);
         }
@@ -141,7 +159,7 @@ document.addEventListener("DOMContentLoaded", () => {
             captionText.classList.remove("visible-caption");
 
             setTimeout(() => {
-                current = (current + 1) % photos.length;
+                slideshowCurrent = (slideshowCurrent + 1) % photos.length;
                 updateSlideshow();
 
                 // 图片淡入
@@ -150,15 +168,17 @@ document.addEventListener("DOMContentLoaded", () => {
                 // 图片淡入动画持续0.8秒，0.8秒后触发文字淡入
                 setTimeout(() => {
                     captionText.classList.add("visible-caption");
-                }, 800);
+                }, 500);
 
-                if (current === photos.length - 1) {
-                    clearInterval(interval);
+                if (slideshowCurrent === photos.length - 1) {
+                    clearInterval(slideshowInterval);
+                    slideshowInterval = null;
                     setTimeout(() => {
                         document.getElementById("memoryVideo").load();
                         showSection(sections.video);
                     }, 3000);
                 }
+                resetAutoPlay();
             }, 800); // 等待图片淡出动画完成
         }
 
@@ -167,36 +187,41 @@ document.addEventListener("DOMContentLoaded", () => {
             captionText.classList.remove("visible-caption");
 
             setTimeout(() => {
-                current = (current - 1 + photos.length) % photos.length;
+                slideshowCurrent = (slideshowCurrent - 1 + photos.length) % photos.length;
                 updateSlideshow();
 
                 container.classList.remove("fade-out");
 
                 setTimeout(() => {
                     captionText.classList.add("visible-caption");
-                }, 800);
-
+                }, 500);
                 resetAutoPlay();
             }, 800);
         }
 
-        function startAutoPlay() {
-            clearInterval(interval);
-            interval = setInterval(nextPhoto, 1500);
+        startAutoPlay = function () {
+            clearInterval(slideshowInterval);
+            slideshowInterval = null;
+            slideshowInterval = setInterval(nextPhoto, 2500);
         }
 
         function resetAutoPlay() {
-            clearInterval(interval);
-            startAutoPlay();
+            clearInterval(slideshowInterval);
+            slideshowInterval = null;
+            slideshowInterval = setInterval(nextPhoto, 2500);
         }
 
-        document.getElementById("nextPhoto").addEventListener("click", nextPhoto);
-        document.getElementById("prevPhoto").addEventListener("click", prevPhoto);
+        // 绑定导航按钮
+        document.getElementById("nextPhoto").addEventListener("click", () => {
+            resetAutoPlay();
+            nextPhoto();
+        });
+
+        document.getElementById("prevPhoto").addEventListener("click", () => {
+            resetAutoPlay();
+            prevPhoto();
+        });
         updateSlideshow();
-
-        if (sections.photo.classList.contains("active")) {
-            startAutoPlay();
-        }
     }
 
 
@@ -220,7 +245,7 @@ document.addEventListener("DOMContentLoaded", () => {
             span.style.fontSize = `${Math.random() * 10 + 18}px`;
 
             danmakuContainer.appendChild(span);
-            span.animate([{transform: "translateX(100vw)"}, {transform: "translateX(-100%)"}], {
+            span.animate([{ transform: "translateX(100vw)" }, { transform: "translateX(-100%)" }], {
                 duration: Math.random() * 5000 + 5000,
                 easing: "linear"
             });
@@ -238,7 +263,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
         video.addEventListener("ended", () => {
             showSection(sections.final);
-            showPoemLines();
+            setTimeout(() => {
+                showPoemLines();
+            }, 100); // 短延迟确保DOM更新
         });
     }
 
@@ -248,10 +275,8 @@ document.addEventListener("DOMContentLoaded", () => {
     async function showPoemLines() {
         const lines = document.querySelectorAll(".poem-line");
         const poemStage = document.getElementById("poemStage");
-        const poemContainer = document.querySelector(".poem-container");
 
         // 隐藏原始容器，防止样式干扰
-        poemContainer.style.display = "none";
 
         const segments = [
             [0, 3], [3, 7], [7, 11], [11, 15], [15, 19], [19, 22], [22, 25]
@@ -278,7 +303,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // 一句一句进入动画
             const lineEls = segmentDiv.querySelectorAll(".poem-line");
-            await showLinesWithDelay(lineEls, 800);
+            await showLinesWithDelay(lineEls, 1200);
 
             // 非最后一段需要淡出并删除
             if (!segmentDiv.classList.contains("final-segment")) {
