@@ -46,6 +46,11 @@ document.addEventListener("DOMContentLoaded", () => {
     function showSection(target) {
         Object.values(sections).forEach(sec => sec.classList.remove("active"));
         target.classList.add("active");
+        if (target === sections.photo) {
+            setTimeout(() => {
+                startAutoPlay();
+            }, 300);
+        }
 
         if (target === sections.video) {
             target.style.opacity = 0;
@@ -189,11 +194,9 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("prevPhoto").addEventListener("click", prevPhoto);
         updateSlideshow();
 
-        sections.photo.addEventListener("transitionend", () => {
-            if (sections.photo.classList.contains("active")) {
-                startAutoPlay();
-            }
-        });
+        if (sections.photo.classList.contains("active")) {
+            startAutoPlay();
+        }
     }
 
 
