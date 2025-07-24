@@ -167,9 +167,14 @@ body {
 
 /* 导航按钮控制区域 */
 .nav-controls {
-  position: relative;
-  bottom: auto;
-  margin-top: 20px;
+  position: fixed; /* 改为固定定位 */
+  bottom: 20px;   /* 距离底部20像素 */
+  left: 0;        /* 左侧对齐 */
+  right: 0;       /* 右侧对齐 */
+  display: flex;
+  justify-content: center; /* 水平居中 */
+  margin-top: 0;   /* 移除原有上边距 */
+  z-index: 1000;   /* 确保在最上层 */
 }
 
 /* 导航按钮 */
@@ -177,8 +182,8 @@ body {
   background: #fff;
   border: none;
   border-radius: 50%;
-  width: 48px;
-  height: 48px;
+  width: 56px;
+  height: 56px;
   margin: 0 10px;
   font-size: 1.4rem;
   color: #ff6b9d;
@@ -357,10 +362,7 @@ body {
 /* 保留你的最终段落特殊效果（未变） */
 .poem-segment.final-segment .poem-line {
   white-space: nowrap;
-  font-size: 6vw;
-  max-width: 100vw;
-  text-align: center;
-  overflow: visible;
+  font-size: 2.0rem;
   color: #ffd166;
   text-shadow: 0 0 15px rgba(255, 209, 102, 0.7);
   animation: glow 3s infinite alternate;
@@ -386,9 +388,10 @@ body {
 /* === 保留原有行进入动画 === */
 .poem-line {
   white-space: nowrap;
-  font-size: 5vw;
+  font-size: 1.6rem;
   max-width: 100vw;
   color: #e0e0ff;
+  position: relative;
   font-family: 'Ma Shan Zheng', cursive;
   opacity: 0;
   transform: translateY(20px);
@@ -398,7 +401,7 @@ body {
 }
 
 .poem-segment:not(.final-segment) .poem-line {
-  font-size: 5vw;
+  font-size: 1.8rem;
   color: #f0f0ff;
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
 }
@@ -426,7 +429,7 @@ body {
 
 #finalMessage {
   position: relative;
-  width: 100vw;
+  width: 100%;
   height: 100vh;
   display: flex;
   justify-content: center;
@@ -436,14 +439,13 @@ body {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  background-attachment: fixed;
   z-index: 1;
 }
 
 /* 添加半透明遮罩增强文字可读性 */
 #finalMessage::before {
   content: "";
-  position: absolute;
+  position: relative;
   top: 0;
   left: 0;
   width: 100%;
