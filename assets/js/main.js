@@ -269,7 +269,7 @@ document.addEventListener("DOMContentLoaded", () => {
             showSection(sections.final);
             setTimeout(() => {
                 showPoemLines();
-            }, 100); // 短延迟确保DOM更新
+            }, 2000); // 短延迟确保DOM更新
         });
     }
 
@@ -307,7 +307,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // 一句一句进入动画
             const lineEls = segmentDiv.querySelectorAll(".poem-line");
-            await showLinesWithDelay(lineEls, 1200);
+            await showLinesWithDelay(lineEls, 1700);
 
             // 非最后一段需要淡出并删除
             if (!segmentDiv.classList.contains("final-segment")) {
