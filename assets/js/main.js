@@ -16,6 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let slideshowInterval = null;
     let slideshowCurrent = 0;
+    let hasFinished = false;
 
     initIntro();
     initSlideshow();
@@ -57,11 +58,12 @@ document.addEventListener("DOMContentLoaded", () => {
         target.style.display = "flex"; // 或您使用的布局方式
         target.classList.add("active");
         if (target === sections.photo) {
-            slideshowCurrent = -1;
+            slideshowCurrent = 0;
             startAutoPlay();
         }
 
         if (target === sections.video) {
+            if(hasFinished) return;
             video = document.getElementById("memoryVideo");
             video.currentTime = 0;
             video.pause();
@@ -76,7 +78,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         if (target === sections.final) {
-            // 准备诗歌舞台
             const poemStage = document.getElementById("poemStage");
             poemStage.style.display = "flex";
             poemStage.innerHTML = "";
@@ -264,6 +265,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         video.addEventListener("ended", () => {
+            hasFinished=true;
             showSection(sections.final);
             setTimeout(() => {
                 showPoemLines();
