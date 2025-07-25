@@ -290,7 +290,7 @@ document.addEventListener("DOMContentLoaded", () => {
             // 创建新的段落容器
             const segmentDiv = document.createElement("div");
             segmentDiv.className = "poem-segment";
-            if (end === 25) segmentDiv.classList.add("final-segment");
+            if (end === 250) segmentDiv.classList.add("final-segment");
 
             // 添加对应诗句
             for (let i = start; i < end; i++) {
